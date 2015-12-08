@@ -10,6 +10,8 @@ public class Pipe : MonoBehaviour {
     public float minCurveRadius, maxCurveRadius;
     public int minCurveSegmentCount, maxCurveSegmentCount;
 
+    public PipeItemGenerator[] generators;
+
     private float curveRadius;
     private int curveSegmentCount;
 
@@ -18,6 +20,7 @@ public class Pipe : MonoBehaviour {
     private int[] triangles;
     private float curveAngle;
     private float relativeRotation; // random rotation around the x-axis
+    private Vector2[] uv;
 
     private void Awake()
     {
@@ -32,8 +35,15 @@ public class Pipe : MonoBehaviour {
             Random.Range(minCurveSegmentCount, maxCurveSegmentCount + 1);
         mesh.Clear();
         SetVertices();
+        SetUV();
         SetTriangles();
         mesh.RecalculateNormals();
+
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Destroy(transform.GetChild(i).gameObject);
+        }
+        generators[Random.Range(0, generators.Length)].GenerateItems(this);
     }
 
     private Vector3 GetPointOnTorus(float u, float v)
@@ -111,14 +121,27 @@ public class Pipe : MonoBehaviour {
         }
     }
 
+    private void SetUV()
+    {
+        uv = new Vector2[vertices.Length];
+        for (int i = 0; i < vertices.Length; i += 4)
+        {
+            uv[i] = Vector2.zero;
+            uv[i + 1] = Vector2.right;
+            uv[i + 2] = Vector2.up;
+            uv[i + 3] = Vector2.one;
+        }
+        mesh.uv = uv;
+    }
+
     private void SetTriangles()
     {
         triangles = new int[pipeSegmentCount * curveSegmentCount * 6];
         for (int t = 0, i = 0; t < triangles.Length; t += 6, i += 4)
         {
             triangles[t] = i;
-            triangles[t + 1] = triangles[t + 4] = i + 1;
-            triangles[t + 2] = triangles[t + 3] = i + 2;
+            triangles[t + 1] = triangles[t + 4] = i + 2;
+            triangles[t + 2] = triangles[t + 3] = i + 1;
             triangles[t + 5] = i + 3;
         }
         mesh.triangles = triangles;
@@ -161,4 +184,17 @@ public class Pipe : MonoBehaviour {
             return relativeRotation;
         }
     }
+
+    public int CurveSegmentCount
+    {
+        get
+        {
+            return curveSegmentCount;
+        }
+    }
+
+    //void Update()
+    //{
+    //    ringDistance -= 0.001f;
+    //}
 }

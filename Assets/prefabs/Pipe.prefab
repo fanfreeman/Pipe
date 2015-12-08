@@ -40,7 +40,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 7a90e85148265b447a54ec8e38a4a8b0, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 1
@@ -48,7 +48,9 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_MinimumChartSize: 4
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
@@ -73,12 +75,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pipeRadius: 1
-  pipeSegmentCount: 10
-  ringDistance: 1
+  pipeSegmentCount: 16
+  ringDistance: .769999981
   minCurveRadius: 4
   maxCurveRadius: 20
   minCurveSegmentCount: 4
   maxCurveSegmentCount: 10
+  generators:
+  - {fileID: 11491432, guid: ccaff1dff8f7679438cf6fa0c5d939ec, type: 2}
+  - {fileID: 11491432, guid: ccaff1dff8f7679438cf6fa0c5d939ec, type: 2}
+  - {fileID: 11442216, guid: f1328a43fc74ff14ba72ddd1d459823d, type: 2}
+  - {fileID: 11442216, guid: f1328a43fc74ff14ba72ddd1d459823d, type: 2}
+  - {fileID: 11442216, guid: f1328a43fc74ff14ba72ddd1d459823d, type: 2}
+  - {fileID: 11472950, guid: b17f7478c7d469341b8dfaa568aa0f8a, type: 2}
+  - {fileID: 11455678, guid: a37192dfe0d9ef44ea2bcee0a656f23c, type: 2}
+  - {fileID: 11456208, guid: 41fe7efb043255d43a5cc548e78d1afb, type: 2}
+  - {fileID: 11499324, guid: 6813486b3423ef6489475ba938f2e11e, type: 2}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -86,6 +98,10 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: generators.Array.size
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: minCurveRadius
       value: 4
@@ -106,6 +122,63 @@ Prefab:
       propertyPath: pipeRadius
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 7a90e85148265b447a54ec8e38a4a8b0, type: 2}
+    - target: {fileID: 0}
+      propertyPath: pipeSegmentCount
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ringDistance
+      value: .769999981
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: generators.Array.data[0]
+      value: 
+      objectReference: {fileID: 11491432, guid: ccaff1dff8f7679438cf6fa0c5d939ec,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: generators.Array.data[1]
+      value: 
+      objectReference: {fileID: 11491432, guid: ccaff1dff8f7679438cf6fa0c5d939ec,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: generators.Array.data[2]
+      value: 
+      objectReference: {fileID: 11442216, guid: f1328a43fc74ff14ba72ddd1d459823d,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: generators.Array.data[3]
+      value: 
+      objectReference: {fileID: 11442216, guid: f1328a43fc74ff14ba72ddd1d459823d,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: generators.Array.data[4]
+      value: 
+      objectReference: {fileID: 11442216, guid: f1328a43fc74ff14ba72ddd1d459823d,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: generators.Array.data[5]
+      value: 
+      objectReference: {fileID: 11472950, guid: b17f7478c7d469341b8dfaa568aa0f8a,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: generators.Array.data[6]
+      value: 
+      objectReference: {fileID: 11455678, guid: a37192dfe0d9ef44ea2bcee0a656f23c,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: generators.Array.data[7]
+      value: 
+      objectReference: {fileID: 11456208, guid: 41fe7efb043255d43a5cc548e78d1afb,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: generators.Array.data[8]
+      value: 
+      objectReference: {fileID: 11499324, guid: 6813486b3423ef6489475ba938f2e11e,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 142984}
