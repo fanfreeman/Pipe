@@ -5,9 +5,17 @@ public class Player : MonoBehaviour {
 
     public PipeSystem pipeSystem;
 
-    public float velocity;
-
     public float rotationVelocity;
+
+    public MainMenu mainMenu;
+
+    public float startVelocity;
+
+    public float[] accelerations;
+
+    public HUD hud;
+
+    private float acceleration, velocity;
 
     private Pipe currentPipe;
 
@@ -20,16 +28,33 @@ public class Player : MonoBehaviour {
 
     private float worldRotation, avatarRotation;
 
-    private void Start()
+    public void StartGame(int accelerationMode)
+    {
+        distanceTraveled = 0f;
+        avatarRotation = 0f;
+        systemRotation = 0f;
+        worldRotation = 0f;
+        acceleration = accelerations[accelerationMode];
+        velocity = startVelocity;
+        currentPipe = pipeSystem.SetupFirstPipe();
+        SetupCurrentPipe();
+        gameObject.SetActive(true);
+        hud.SetValues(distanceTraveled, velocity);
+    }
+
+    private void Awake()
     {
         world = pipeSystem.transform.parent;
         rotater = transform.GetChild(0);
-        currentPipe = pipeSystem.SetupFirstPipe();
-        SetupCurrentPipe();
+        //gameObject.SetActive(false);
+
+        StartGame(0);
     }
 
     private void Update()
     {
+        velocity += acceleration * Time.deltaTime;
+
         float delta = velocity * Time.deltaTime;
         distanceTraveled += delta;
         systemRotation += delta * deltaToRotation;
@@ -47,12 +72,30 @@ public class Player : MonoBehaviour {
             Quaternion.Euler(0f, 0f, systemRotation);
 
         UpdateAvatarRotation();
+        hud.SetValues(distanceTraveled, velocity);
     }
 
     private void UpdateAvatarRotation()
     {
+        float rotationInput = 0f;
+        if (Application.isMobilePlatform)
+        {
+            if (Input.touchCount == 1)
+            {
+                if (Input.GetTouch(0).position.x < Screen.width * 0.5f)
+                {
+                    rotationInput = -1f;
+                }
+                else {
+                    rotationInput = 1f;
+                }
+            }
+        }
+        else {
+            rotationInput = Input.GetAxis("Horizontal");
+        }
         avatarRotation +=
-            rotationVelocity * Time.deltaTime * Input.GetAxis("Horizontal");
+            rotationVelocity * Time.deltaTime * rotationInput;
         if (avatarRotation < 0f)
         {
             avatarRotation += 360f;
@@ -77,5 +120,11 @@ public class Player : MonoBehaviour {
             worldRotation -= 360f;
         }
         world.localRotation = Quaternion.Euler(worldRotation, 0f, 0f);
+    }
+
+    public void Die()
+    {
+        mainMenu.EndGame(distanceTraveled);
+        gameObject.SetActive(false);
     }
 }

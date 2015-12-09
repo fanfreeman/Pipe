@@ -88,9 +88,6 @@ MonoBehaviour:
   - {fileID: 11442216, guid: f1328a43fc74ff14ba72ddd1d459823d, type: 2}
   - {fileID: 11442216, guid: f1328a43fc74ff14ba72ddd1d459823d, type: 2}
   - {fileID: 11472950, guid: b17f7478c7d469341b8dfaa568aa0f8a, type: 2}
-  - {fileID: 11455678, guid: a37192dfe0d9ef44ea2bcee0a656f23c, type: 2}
-  - {fileID: 11456208, guid: 41fe7efb043255d43a5cc548e78d1afb, type: 2}
-  - {fileID: 11499324, guid: 6813486b3423ef6489475ba938f2e11e, type: 2}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -100,7 +97,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 0}
       propertyPath: generators.Array.size
-      value: 9
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: minCurveRadius
