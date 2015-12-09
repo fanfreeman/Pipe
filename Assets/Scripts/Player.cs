@@ -81,8 +81,7 @@ public class Player : MonoBehaviour {
         Vector3 forceDirection = new Vector3(1f, 0f, 0f);
         avatar.GetComponent<Rigidbody>().AddForce(forceDirection * 10f, ForceMode.Acceleration);
 
-        // make camera look at avatar
-
+        // make camera follow and look at avatar
         GetComponentInChildren<Camera>().transform.LookAt(avatar.transform);
 
         UpdateAvatarRotation();

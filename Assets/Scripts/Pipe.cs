@@ -18,7 +18,7 @@ public class Pipe : MonoBehaviour {
     private Mesh mesh;
     private Vector3[] vertices;
     private int[] triangles;
-    private float curveAngle;
+    private float curveAngle; // 
     private float relativeRotation; // random rotation around the x-axis
     private Vector2[] uv;
 
@@ -54,6 +54,9 @@ public class Pipe : MonoBehaviour {
         }
     }
 
+    // using geometrical formula for a torus, find point on the torus in world space
+    // u is angle in radians on curve
+    // v is angle in radians on pipe cross-section circle
     private Vector3 GetPointOnTorus(float u, float v)
     {
         Vector3 p;
@@ -64,10 +67,23 @@ public class Pipe : MonoBehaviour {
         return p;
     }
 
+    private Vector3 GetPointAtCenterOfPipe(float u)
+    {
+        float originX = 0f;
+        float originY = 0f;
+
+        Vector3 point;
+        point.x = originX + curveRadius * Mathf.Sin(u);
+        point.y = originY + curveRadius * Mathf.Cos(u);
+        point.z = 0f;
+
+        return transform.TransformPoint(point);
+    }
+
     private void OnDrawGizmos()
     {
         Gizmos.DrawSphere(new Vector3(0f, 0f, 0f), 0.1f);
-        //    float uStep = (2f * Mathf.PI) / curveSegmentCount;
+        float uStep = ringDistance / curveRadius;
         //    float vStep = (2f * Mathf.PI) / pipeSegmentCount;
 
         //    for (int u = 0; u < curveSegmentCount; u++)
@@ -82,6 +98,15 @@ public class Pipe : MonoBehaviour {
         //            Gizmos.DrawSphere(point, 0.1f);
         //        }
         //    }
+        for (int u = 0; u < curveSegmentCount; u++)
+        {
+            Vector3 point = GetPointAtCenterOfPipe(u * uStep);
+            Gizmos.color = new Color(
+                        1f,
+                        1f,
+                        (float)u / curveSegmentCount);
+            Gizmos.DrawSphere(point, 0.1f);
+        }
     }
 
     private void SetVertices()

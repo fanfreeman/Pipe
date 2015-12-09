@@ -76,7 +76,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pipeRadius: 1
   pipeSegmentCount: 16
-  ringDistance: .769999981
+  ringDistance: 1
   minCurveRadius: 4
   maxCurveRadius: 20
   minCurveSegmentCount: 4
@@ -129,7 +129,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: ringDistance
-      value: .769999981
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: generators.Array.data[0]

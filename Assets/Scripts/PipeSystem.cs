@@ -32,20 +32,21 @@ public class PipeSystem : MonoBehaviour {
                 pipe.AlignWith(pipes[i - 1]);
             }
         }
-        AlignNextPipeWithOrigin();
+        //AlignNextPipeWithOrigin();
 
-        transform.localPosition = new Vector3(0f, -pipes[1].CurveRadius);
-        return pipes[1];
+        // move the opening of the first pipe to world origin
+        transform.localPosition = new Vector3(0f, -pipes[0].CurveRadius);
+        return pipes[0];
     }
 
     public Pipe SetupNextPipe()
     {
         ShiftPipes();
-        AlignNextPipeWithOrigin();
+        //AlignNextPipeWithOrigin();
         pipes[pipes.Length - 1].Generate();
         pipes[pipes.Length - 1].AlignWith(pipes[pipes.Length - 2]);
-        transform.localPosition = new Vector3(0f, -pipes[1].CurveRadius);
-        return pipes[1];
+        transform.localPosition = new Vector3(0f, -pipes[0].CurveRadius);
+        return pipes[0];
     }
 
     private void ShiftPipes()
@@ -58,20 +59,20 @@ public class PipeSystem : MonoBehaviour {
         pipes[pipes.Length - 1] = temp;
     }
 
-    private void AlignNextPipeWithOrigin()
-    {
-        Transform transformToAlign = pipes[1].transform;
-        for (int i = 0; i < pipes.Length; i++)
-        {
-            if (i != 1) pipes[i].transform.SetParent(transformToAlign);
-        }
+    //private void AlignNextPipeWithOrigin()
+    //{
+    //    Transform transformToAlign = pipes[0].transform;
+    //    for (int i = 1; i < pipes.Length; i++)
+    //    {
+    //        pipes[i].transform.SetParent(transformToAlign);
+    //    }
 
-        transformToAlign.localPosition = Vector3.zero;
-        transformToAlign.localRotation = Quaternion.identity;
+    //    transformToAlign.localPosition = Vector3.zero;
+    //    transformToAlign.localRotation = Quaternion.identity;
 
-        for (int i = 0; i < pipes.Length; i++)
-        {
-            if (i != 1) pipes[i].transform.SetParent(transform);
-        }
-    }
+    //    for (int i = 1; i < pipes.Length; i++)
+    //    {
+    //        pipes[i].transform.SetParent(transform);
+    //    }
+    //}
 }
