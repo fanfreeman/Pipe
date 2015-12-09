@@ -15,14 +15,16 @@ public class Player : MonoBehaviour {
 
     public HUD hud;
 
+    public Avatar avatar;
+
     private float acceleration, velocity;
 
     private Pipe currentPipe;
 
     private float distanceTraveled;
 
-    private float deltaToRotation;
-    private float systemRotation;
+    private float deltaToRotation; // system rotation speed; delta times this equals system rotation
+    private float systemRotation; // rotation of the entire pipe system
 
     private Transform world, rotater;
 
@@ -48,6 +50,11 @@ public class Player : MonoBehaviour {
         rotater = transform.GetChild(0);
         //gameObject.SetActive(false);
 
+        
+    }
+
+    void Start()
+    {
         StartGame(0);
     }
 
@@ -57,9 +64,10 @@ public class Player : MonoBehaviour {
 
         float delta = velocity * Time.deltaTime;
         distanceTraveled += delta;
-        systemRotation += delta * deltaToRotation;
+        //systemRotation += delta * deltaToRotation;
 
-        // check if should set up next pipe
+        // check if we have traveled the entire length of a pipe segment
+        // and should set up the next pipe
         if (systemRotation >= currentPipe.CurveAngle)
         {
             delta = (systemRotation - currentPipe.CurveAngle) / deltaToRotation;
@@ -68,8 +76,14 @@ public class Player : MonoBehaviour {
             systemRotation = delta * deltaToRotation;
         }
 
-        pipeSystem.transform.localRotation =
-            Quaternion.Euler(0f, 0f, systemRotation);
+        //pipeSystem.transform.localRotation =
+        //    Quaternion.Euler(0f, 0f, systemRotation);
+        Vector3 forceDirection = new Vector3(1f, 0f, 0f);
+        avatar.GetComponent<Rigidbody>().AddForce(forceDirection * 10f, ForceMode.Acceleration);
+
+        // make camera look at avatar
+
+        GetComponentInChildren<Camera>().transform.LookAt(avatar.transform);
 
         UpdateAvatarRotation();
         hud.SetValues(distanceTraveled, velocity);
@@ -94,17 +108,18 @@ public class Player : MonoBehaviour {
         else {
             rotationInput = Input.GetAxis("Horizontal");
         }
-        avatarRotation +=
-            rotationVelocity * Time.deltaTime * rotationInput;
-        if (avatarRotation < 0f)
-        {
-            avatarRotation += 360f;
-        }
-        else if (avatarRotation >= 360f)
-        {
-            avatarRotation -= 360f;
-        }
-        rotater.localRotation = Quaternion.Euler(avatarRotation, 0f, 0f);
+
+        //avatarRotation +=
+        //    rotationVelocity * Time.deltaTime * rotationInput;
+        //if (avatarRotation < 0f)
+        //{
+        //    avatarRotation += 360f;
+        //}
+        //else if (avatarRotation >= 360f)
+        //{
+        //    avatarRotation -= 360f;
+        //}
+        //rotater.localRotation = Quaternion.Euler(avatarRotation, 0f, 0f);
     }
 
     private void SetupCurrentPipe()
