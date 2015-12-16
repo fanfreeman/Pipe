@@ -30,6 +30,9 @@ public class Player : MonoBehaviour {
 
     private float worldRotation, avatarRotation;
 
+    private Vector3 centerTrackPosition;
+    private float progress = 0;
+
     public void StartGame(int accelerationMode)
     {
         distanceTraveled = 0f;
@@ -56,36 +59,60 @@ public class Player : MonoBehaviour {
     void Start()
     {
         StartGame(0);
+        centerTrackPosition = pipeSystem.cameraSpline.GetPoint(0);
     }
 
     private void Update()
     {
-        velocity += acceleration * Time.deltaTime;
+        //velocity += acceleration * Time.deltaTime;
 
-        float delta = velocity * Time.deltaTime;
-        distanceTraveled += delta;
-        //systemRotation += delta * deltaToRotation;
+        //float delta = velocity * Time.deltaTime;
+        //distanceTraveled += delta;
+        ////systemRotation += delta * deltaToRotation;
 
-        // check if we have traveled the entire length of a pipe segment
-        // and should set up the next pipe
-        if (systemRotation >= currentPipe.CurveAngle)
-        {
-            delta = (systemRotation - currentPipe.CurveAngle) / deltaToRotation;
-            currentPipe = pipeSystem.SetupNextPipe();
-            SetupCurrentPipe();
-            systemRotation = delta * deltaToRotation;
-        }
+        //// check if we have traveled the entire length of a pipe segment
+        //// and should set up the next pipe
+        //if (systemRotation >= currentPipe.CurveAngle)
+        //{
+        //    delta = (systemRotation - currentPipe.CurveAngle) / deltaToRotation;
+        //    currentPipe = pipeSystem.SetupNextPipe();
+        //    SetupCurrentPipe();
+        //    systemRotation = delta * deltaToRotation;
+        //}
 
         //pipeSystem.transform.localRotation =
         //    Quaternion.Euler(0f, 0f, systemRotation);
-        Vector3 forceDirection = new Vector3(1f, 0f, 0f);
-        avatar.GetComponent<Rigidbody>().AddForce(forceDirection * 10f, ForceMode.Acceleration);
 
-        // make camera follow and look at avatar
-        GetComponentInChildren<Camera>().transform.LookAt(avatar.transform);
+        // find distance between center track point and avatar
+        float distanceToAvatar = Vector3.Distance(centerTrackPosition, avatar.transform.position);
+        while (distanceToAvatar > 2f)
+        {
+            // move camera by setting a new value for progress along the spline
+            progress += 0.001f;
+            if (progress > 1f)
+            {
+                progress = 1f;
+                break;
+            }
+            centerTrackPosition = pipeSystem.cameraSpline.GetPoint(progress);
+            distanceToAvatar = Vector3.Distance(centerTrackPosition, avatar.transform.position);
+        }
 
+        Vector3 forceDirection = pipeSystem.cameraSpline.GetVelocity(progress);
+        avatar.GetComponent<Rigidbody>().AddForce(forceDirection * 2f, ForceMode.Acceleration);
+        
         UpdateAvatarRotation();
         hud.SetValues(distanceTraveled, velocity);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawSphere(centerTrackPosition, 0.5f);
+    }
+
+    public Vector3 GetUpVector()
+    {
+        return centerTrackPosition - avatar.transform.position;
     }
 
     private void UpdateAvatarRotation()

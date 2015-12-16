@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PipeSystem : MonoBehaviour {
 
@@ -11,18 +12,27 @@ public class PipeSystem : MonoBehaviour {
 
     private Pipe[] pipes;
 
+    public BezierSpline cameraSpline;
+    private List<Vector3> cameraSplinePoints;
+
     private void Awake()
     {
+        // instantiate pipes
         pipes = new Pipe[pipeCount];
         for (int i = 0; i < pipes.Length; i++)
         {
             Pipe pipe = pipes[i] = Instantiate<Pipe>(pipePrefab);
             pipe.transform.SetParent(transform, false);
         }
+
+        // create camera bezier spline
+        cameraSpline = gameObject.AddComponent<BezierSpline>();
+        cameraSplinePoints = new List<Vector3>();
     }
 
     public Pipe SetupFirstPipe()
     {
+        // generate all the pipes in the system
         for (int i = 0; i < pipes.Length; i++)
         {
             Pipe pipe = pipes[i];
@@ -31,8 +41,12 @@ public class PipeSystem : MonoBehaviour {
             {
                 pipe.AlignWith(pipes[i - 1]);
             }
+
+            cameraSplinePoints.AddRange(pipe.GetCenterPoints());
         }
         //AlignNextPipeWithOrigin();
+
+        cameraSpline.Init(cameraSplinePoints.ToArray());
 
         // move the opening of the first pipe to world origin
         transform.localPosition = new Vector3(0f, -pipes[0].CurveRadius);
@@ -57,6 +71,11 @@ public class PipeSystem : MonoBehaviour {
             pipes[i - 1] = pipes[i];
         }
         pipes[pipes.Length - 1] = temp;
+    }
+
+    void GetNextPipeSystemCenterPathCoordinates()
+    {
+
     }
 
     //private void AlignNextPipeWithOrigin()

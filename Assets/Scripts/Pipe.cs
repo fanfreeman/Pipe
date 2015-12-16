@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Pipe : MonoBehaviour {
 
     public float pipeRadius;
     public int pipeSegmentCount;
-    public float ringDistance;
+    public float ringDistance; // scaling of pipe rings; default is 1
 
     public float minCurveRadius, maxCurveRadius;
     public int minCurveSegmentCount, maxCurveSegmentCount;
@@ -22,14 +23,19 @@ public class Pipe : MonoBehaviour {
     private float relativeRotation; // random rotation around the x-axis
     private Vector2[] uv;
 
+    private List<Vector3> centerPoints;
+
     private void Awake()
     {
         GetComponent<MeshFilter>().mesh = mesh = new Mesh();
         mesh.name = "Pipe";
+
+        centerPoints = new List<Vector3>();
     }
 
     public void Generate(bool withItems = true)
     {
+        // create pipe mesh
         curveRadius = Random.Range(minCurveRadius, maxCurveRadius);
         curveSegmentCount =
             Random.Range(minCurveSegmentCount, maxCurveSegmentCount + 1);
@@ -43,11 +49,13 @@ public class Pipe : MonoBehaviour {
         transform.gameObject.AddComponent<MeshCollider>();
         transform.GetComponent<MeshCollider>().sharedMesh = mesh;
 
+        // clean up obstacles for recycled pipe
         for (int i = 0; i < transform.childCount; i++)
         {
             Destroy(transform.GetChild(i).gameObject);
         }
-
+        
+        // create new obstacles for this pipe
         if (withItems)
         {
             generators[Random.Range(0, generators.Length)].GenerateItems(this);
@@ -192,6 +200,21 @@ public class Pipe : MonoBehaviour {
         transform.Translate(0f, -curveRadius, 0f);
         transform.SetParent(pipe.transform.parent);
         transform.localScale = Vector3.one; // prevent transform degradation when changing parents
+    }
+
+    // get a list of the pipe's center points for the camera track
+    public List<Vector3> GetCenterPoints()
+    {
+        centerPoints.Clear();
+        float uStep = ringDistance / curveRadius;
+        for (int u = 0; u < curveSegmentCount; u++)
+        {
+            Vector3 point = GetPointAtCenterOfPipe(u * uStep);
+            centerPoints.Add(point);
+        }
+
+        return centerPoints;
+
     }
 
     public float CurveRadius
