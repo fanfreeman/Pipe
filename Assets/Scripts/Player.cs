@@ -101,7 +101,7 @@ public class Player : MonoBehaviour {
         Vector3 forceDirection = pipeSystem.cameraSpline.GetVelocity(progress);
         avatar.GetComponent<Rigidbody>().AddForce(forceDirection * 2f, ForceMode.Acceleration);
         
-        UpdateAvatarRotation();
+        UpdateAvatarRotation(forceDirection, pipeSystem.cameraSpline.GetPoint(progress));
         hud.SetValues(distanceTraveled, velocity);
     }
 
@@ -115,37 +115,61 @@ public class Player : MonoBehaviour {
         return centerTrackPosition - avatar.transform.position;
     }
 
-    private void UpdateAvatarRotation()
+    private void UpdateAvatarRotation(Vector3 forceDirection,Vector3 curvePoint)
     {
         float rotationInput = 0f;
         if (Application.isMobilePlatform)
         {
             if (Input.touchCount == 1)
             {
+                Vector3 goAheadVector = avatar.transform.position + forceDirection;
+                Vector3 normal = new Vector3();
+                Vector3 temp = new Vector3();
+                //为了让力能垂直于曲线和车 根据3点计算出左右力坐在平面的normal
+                Math3d.PlaneFrom3Points(out normal,out temp, goAheadVector, curvePoint,avatar.transform.position);
+
                 if (Input.GetTouch(0).position.x < Screen.width * 0.5f)
                 {
-                    rotationInput = -1f;
+                    avatar.GetComponent<Rigidbody>().AddForce(-normal * 12f, ForceMode.Acceleration);
                 }
                 else {
-                    rotationInput = 1f;
+                    avatar.GetComponent<Rigidbody>().AddForce(normal * 12f, ForceMode.Acceleration);
                 }
             }
         }
         else {
             rotationInput = Input.GetAxis("Horizontal");
-        }
+            if(rotationInput != 0)
+            {
+                Vector3 goAheadVector = avatar.transform.position + forceDirection;
+                Vector3 normal = new Vector3();
+                Vector3 temp = new Vector3();
+                //为了让力能垂直于曲线和车 根据3点计算出左右力坐在平面的normal
+                Math3d.PlaneFrom3Points(out normal,out temp, goAheadVector, curvePoint,avatar.transform.position);
+                if( rotationInput > 0 )
+                {
+                    avatar.GetComponent<Rigidbody>().AddForce(-normal * 12f, ForceMode.Acceleration);
 
-        //avatarRotation +=
-        //    rotationVelocity * Time.deltaTime * rotationInput;
-        //if (avatarRotation < 0f)
-        //{
-        //    avatarRotation += 360f;
-        //}
-        //else if (avatarRotation >= 360f)
-        //{
-        //    avatarRotation -= 360f;
-        //}
-        //rotater.localRotation = Quaternion.Euler(avatarRotation, 0f, 0f);
+                }
+                else if(rotationInput < 0)
+                {
+                    avatar.GetComponent<Rigidbody>().AddForce(normal * 12f, ForceMode.Acceleration);
+                }
+            }
+        }
+        Debug.Log("rotationInput："+rotationInput);
+
+//        avatarRotation +=
+//            rotationVelocity * Time.deltaTime * rotationInput;
+//        if (avatarRotation < 0f)
+//        {
+//            avatarRotation += 360f;
+//        }
+//        else if (avatarRotation >= 360f)
+//        {
+//            avatarRotation -= 360f;
+//        }
+//        rotater.localRotation = Quaternion.Euler(avatarRotation, 0f, 0f);
     }
 
     private void SetupCurrentPipe()
