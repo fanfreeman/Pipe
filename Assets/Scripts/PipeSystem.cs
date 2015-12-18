@@ -12,9 +12,6 @@ public class PipeSystem : MonoBehaviour {
 
     private Pipe[] pipes;
 
-    public BezierSpline cameraSpline;
-    private List<Vector3> cameraSplinePoints;
-
     private void Awake()
     {
         // instantiate pipes
@@ -24,10 +21,6 @@ public class PipeSystem : MonoBehaviour {
             Pipe pipe = pipes[i] = Instantiate<Pipe>(pipePrefab);
             pipe.transform.SetParent(transform, false);
         }
-
-        // create camera bezier spline
-        cameraSpline = gameObject.AddComponent<BezierSpline>();
-        cameraSplinePoints = new List<Vector3>();
     }
 
     public Pipe SetupFirstPipe()
@@ -41,28 +34,26 @@ public class PipeSystem : MonoBehaviour {
             {
                 pipe.AlignWith(pipes[i - 1]);
             }
-
-            cameraSplinePoints.AddRange(pipe.GetCenterPoints());
         }
         //AlignNextPipeWithOrigin();
-
-        cameraSpline.Init(cameraSplinePoints.ToArray());
 
         // move the opening of the first pipe to world origin
         transform.localPosition = new Vector3(0f, -pipes[0].CurveRadius);
         return pipes[0];
     }
 
+    // reuse pipes by moving a pipe just traveled through to the end of the system
     public Pipe SetupNextPipe()
     {
         ShiftPipes();
         //AlignNextPipeWithOrigin();
         pipes[pipes.Length - 1].Generate();
         pipes[pipes.Length - 1].AlignWith(pipes[pipes.Length - 2]);
-        transform.localPosition = new Vector3(0f, -pipes[0].CurveRadius);
+        //transform.localPosition = new Vector3(0f, -pipes[0].CurveRadius);
         return pipes[0];
     }
 
+    // move pipes[0] to the end of the array
     private void ShiftPipes()
     {
         Pipe temp = pipes[0];
@@ -71,11 +62,6 @@ public class PipeSystem : MonoBehaviour {
             pipes[i - 1] = pipes[i];
         }
         pipes[pipes.Length - 1] = temp;
-    }
-
-    void GetNextPipeSystemCenterPathCoordinates()
-    {
-
     }
 
     //private void AlignNextPipeWithOrigin()

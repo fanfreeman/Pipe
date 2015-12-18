@@ -74,7 +74,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f956e81e98bfb464ea1aa2b8b3eb4019, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pipeRadius: 1
+  pipeRadius: 2
   pipeSegmentCount: 16
   ringDistance: 1
   minCurveRadius: 4
@@ -117,7 +117,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: pipeRadius
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_Materials.Array.data[0]

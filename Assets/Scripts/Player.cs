@@ -19,30 +19,29 @@ public class Player : MonoBehaviour {
 
     private float acceleration, velocity;
 
-    private Pipe currentPipe;
+    public Pipe currentPipe;
 
     private float distanceTraveled;
-
-    private float deltaToRotation; // system rotation speed; delta times this equals system rotation
-    private float systemRotation; // rotation of the entire pipe system
 
     private Transform world, rotater;
 
     private float worldRotation, avatarRotation;
-
-    private Vector3 centerTrackPosition;
+    
+    private Vector3 centerTrackPointPosition;
+    private Vector3 centerTrackPointDirection;
     private float progress = 0;
+
+    private float progressDelta;
 
     public void StartGame(int accelerationMode)
     {
         distanceTraveled = 0f;
         avatarRotation = 0f;
-        systemRotation = 0f;
         worldRotation = 0f;
         acceleration = accelerations[accelerationMode];
         velocity = startVelocity;
         currentPipe = pipeSystem.SetupFirstPipe();
-        SetupCurrentPipe();
+        //SetupCurrentPipe();
         gameObject.SetActive(true);
         hud.SetValues(distanceTraveled, velocity);
     }
@@ -52,67 +51,60 @@ public class Player : MonoBehaviour {
         world = pipeSystem.transform.parent;
         rotater = transform.GetChild(0);
         //gameObject.SetActive(false);
-
-        
     }
 
     void Start()
     {
         StartGame(0);
-        centerTrackPosition = pipeSystem.cameraSpline.GetPoint(0);
+        centerTrackPointPosition = currentPipe.cameraSpline.GetPoint(0);
     }
 
     private void Update()
     {
-        //velocity += acceleration * Time.deltaTime;
-
-        //float delta = velocity * Time.deltaTime;
-        //distanceTraveled += delta;
-        ////systemRotation += delta * deltaToRotation;
-
-        //// check if we have traveled the entire length of a pipe segment
-        //// and should set up the next pipe
-        //if (systemRotation >= currentPipe.CurveAngle)
-        //{
-        //    delta = (systemRotation - currentPipe.CurveAngle) / deltaToRotation;
-        //    currentPipe = pipeSystem.SetupNextPipe();
-        //    SetupCurrentPipe();
-        //    systemRotation = delta * deltaToRotation;
-        //}
-
         //pipeSystem.transform.localRotation =
         //    Quaternion.Euler(0f, 0f, systemRotation);
 
         // find distance between center track point and avatar
-        float distanceToAvatar = Vector3.Distance(centerTrackPosition, avatar.transform.position);
+        float distanceToAvatar = Vector3.Distance(centerTrackPointPosition, avatar.transform.position);
         while (distanceToAvatar > 2f)
         {
-            // move camera by setting a new value for progress along the spline
+            Debug.Log(distanceToAvatar);
+
+            // move track hook by setting a new value for progress along the spline
             progress += 0.001f;
+
+            // check if we have traveled the entire length of a pipe segment
+            // and should set up the next pipe
             if (progress > 1f)
             {
-                progress = 1f;
-                break;
+                currentPipe = pipeSystem.SetupNextPipe();
+                progress -= 1f;
             }
-            centerTrackPosition = pipeSystem.cameraSpline.GetPoint(progress);
-            distanceToAvatar = Vector3.Distance(centerTrackPosition, avatar.transform.position);
+
+            centerTrackPointPosition = currentPipe.cameraSpline.GetPoint(progress);
+            distanceToAvatar = Vector3.Distance(centerTrackPointPosition, avatar.transform.position);
         }
 
-        Vector3 forceDirection = pipeSystem.cameraSpline.GetVelocity(progress);
-        avatar.GetComponent<Rigidbody>().AddForce(forceDirection * 2f, ForceMode.Acceleration);
-        
-        UpdateAvatarRotation();
-        hud.SetValues(distanceTraveled, velocity);
+        // apply force to move forward
+        centerTrackPointDirection = currentPipe.cameraSpline.GetVelocity(progress);
+        avatar.GetComponent<Rigidbody>().AddForce(centerTrackPointDirection * 1f, ForceMode.Acceleration);
+
+        // apply force to make avatar stick to wall
+        avatar.GetComponent<Rigidbody>().AddForce(-GetUpVector() * 5f, ForceMode.Acceleration);
+
+        //UpdateAvatarRotation();
+        //hud.SetValues(distanceTraveled, velocity);
     }
 
     private void OnDrawGizmos()
     {
-        Gizmos.DrawSphere(centerTrackPosition, 0.5f);
+        // draw the point on the center track closest to the avatar
+        Gizmos.DrawSphere(centerTrackPointPosition, 0.5f);
     }
 
     public Vector3 GetUpVector()
     {
-        return centerTrackPosition - avatar.transform.position;
+        return centerTrackPointPosition - avatar.transform.position;
     }
 
     private void UpdateAvatarRotation()
@@ -148,24 +140,34 @@ public class Player : MonoBehaviour {
         //rotater.localRotation = Quaternion.Euler(avatarRotation, 0f, 0f);
     }
 
-    private void SetupCurrentPipe()
-    {
-        deltaToRotation = 360f / (2f * Mathf.PI * currentPipe.CurveRadius);
-        worldRotation += currentPipe.RelativeRotation;
-        if (worldRotation < 0f)
-        {
-            worldRotation += 360f;
-        }
-        else if (worldRotation >= 360f)
-        {
-            worldRotation -= 360f;
-        }
-        world.localRotation = Quaternion.Euler(worldRotation, 0f, 0f);
-    }
+    //private void SetupCurrentPipe()
+    //{
+    //    deltaToRotation = 360f / (2f * Mathf.PI * currentPipe.CurveRadius);
+    //    worldRotation += currentPipe.RelativeRotation;
+    //    if (worldRotation < 0f)
+    //    {
+    //        worldRotation += 360f;
+    //    }
+    //    else if (worldRotation >= 360f)
+    //    {
+    //        worldRotation -= 360f;
+    //    }
+    //    world.localRotation = Quaternion.Euler(worldRotation, 0f, 0f);
+    //}
 
     public void Die()
     {
         mainMenu.EndGame(distanceTraveled);
         gameObject.SetActive(false);
+    }
+
+    public Vector3 GetCenterTrackHookPosition()
+    {
+        return centerTrackPointPosition;
+    }
+
+    public Vector3 GetCenterTrackPointDirection()
+    {
+        return centerTrackPointDirection;
     }
 }

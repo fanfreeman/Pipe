@@ -13,7 +13,6 @@ public class BezierSpline : MonoBehaviour
         {
             Vector3 point = arrayOfPoints[arrayOfPoints.Length - 1];
             Array.Resize(ref arrayOfPoints, arrayOfPoints.Length + 1);
-            point.x += 1f;
             arrayOfPoints[arrayOfPoints.Length - 1] = point;
         }
         points = arrayOfPoints;

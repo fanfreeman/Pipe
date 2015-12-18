@@ -22,14 +22,17 @@ public class Pipe : MonoBehaviour {
     private float curveAngle; // 
     private float relativeRotation; // random rotation around the x-axis
     private Vector2[] uv;
-
+    
+    public BezierSpline cameraSpline;
     private List<Vector3> centerPoints;
 
     private void Awake()
     {
         GetComponent<MeshFilter>().mesh = mesh = new Mesh();
         mesh.name = "Pipe";
-
+        
+        // create camera bezier spline
+        cameraSpline = gameObject.AddComponent<BezierSpline>();
         centerPoints = new List<Vector3>();
     }
 
@@ -49,6 +52,9 @@ public class Pipe : MonoBehaviour {
         transform.gameObject.AddComponent<MeshCollider>();
         transform.GetComponent<MeshCollider>().sharedMesh = mesh;
 
+        // generate camera spline
+        cameraSpline.Init(GetCenterPoints().ToArray());
+
         // clean up obstacles for recycled pipe
         for (int i = 0; i < transform.childCount; i++)
         {
@@ -63,8 +69,8 @@ public class Pipe : MonoBehaviour {
     }
 
     // using geometrical formula for a torus, find point on the torus in world space
-    // u is angle in radians on curve
-    // v is angle in radians on pipe cross-section circle
+    // u is angle in radians along curve
+    // v is angle in radians along pipe cross-section circle
     private Vector3 GetPointOnTorus(float u, float v)
     {
         Vector3 p;
@@ -75,6 +81,9 @@ public class Pipe : MonoBehaviour {
         return p;
     }
 
+    // using geometrical formula for a circle, find point along curve
+    // in the center of the pipe, in world space
+    // u is angle in radians along curve
     private Vector3 GetPointAtCenterOfPipe(float u)
     {
         float originX = 0f;
@@ -203,7 +212,7 @@ public class Pipe : MonoBehaviour {
     }
 
     // get a list of the pipe's center points for the camera track
-    public List<Vector3> GetCenterPoints()
+    private List<Vector3> GetCenterPoints()
     {
         centerPoints.Clear();
         float uStep = ringDistance / curveRadius;
@@ -248,9 +257,4 @@ public class Pipe : MonoBehaviour {
             return curveSegmentCount;
         }
     }
-
-    //void Update()
-    //{
-    //    ringDistance -= 0.001f;
-    //}
 }
