@@ -27,7 +27,7 @@ public class CameraController : MonoBehaviour {
     {
         // find distance between camera and avatar
         float distanceToAvatar = Vector3.Distance(targetPosition, player.avatar.transform.position);
-        while (distanceToAvatar > 5f)
+        while (distanceToAvatar > 10f)
         {
             // move camera by setting a new value for progress along the spline
             progress += 0.001f;

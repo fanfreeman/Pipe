@@ -85,7 +85,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f956e81e98bfb464ea1aa2b8b3eb4019, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pipeRadius: 2
+  pipeRadius: 5
   pipeSegmentCount: 16
   ringDistance: 1
   minCurveRadius: 20
@@ -99,6 +99,7 @@ MonoBehaviour:
   - {fileID: 11442216, guid: f1328a43fc74ff14ba72ddd1d459823d, type: 2}
   - {fileID: 11442216, guid: f1328a43fc74ff14ba72ddd1d459823d, type: 2}
   - {fileID: 11472950, guid: b17f7478c7d469341b8dfaa568aa0f8a, type: 2}
+  id: 0
   cameraSpline: {fileID: 0}
 --- !u!1001 &100100000
 Prefab:
@@ -129,7 +130,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: pipeRadius
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_Materials.Array.data[0]
