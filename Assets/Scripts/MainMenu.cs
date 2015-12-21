@@ -11,14 +11,12 @@ public class MainMenu : MonoBehaviour {
     private void Awake()
     {
         Application.targetFrameRate = 1000;
-
-        player.StartGame(0);
+        
         gameObject.SetActive(false);
     }
 
     public void StartGame(int mode)
     {
-        player.StartGame(mode);
         gameObject.SetActive(false);
         Cursor.visible = false;
     }

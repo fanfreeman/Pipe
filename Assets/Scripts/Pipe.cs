@@ -13,6 +13,8 @@ public class Pipe : MonoBehaviour {
 
     public PipeItemGenerator[] generators;
 
+    public int id;
+
     private float curveRadius;
     private int curveSegmentCount;
 
@@ -27,6 +29,8 @@ public class Pipe : MonoBehaviour {
     private List<Vector3> centerPoints;
     private MeshCollider meshCollider;
 
+    private PipeSystem pipeSystem;
+
     private void Awake()
     {
         GetComponent<MeshFilter>().mesh = mesh = new Mesh();
@@ -40,8 +44,17 @@ public class Pipe : MonoBehaviour {
         meshCollider = GetComponent<MeshCollider>();
     }
 
+    public void SetPipeSystem(PipeSystem system)
+    {
+        this.pipeSystem = system;
+    }
+
     public void Generate(bool withItems = true)
     {
+        // assign a unique id to this pipe
+        this.id = pipeSystem.idOfNextPipeToGenerate;
+        pipeSystem.idOfNextPipeToGenerate++;
+        
         // create pipe mesh
         curveRadius = Random.Range(minCurveRadius, maxCurveRadius);
         curveSegmentCount = Random.Range(minCurveSegmentCount, maxCurveSegmentCount + 1);

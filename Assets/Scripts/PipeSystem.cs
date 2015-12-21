@@ -10,6 +10,9 @@ public class PipeSystem : MonoBehaviour {
 
     public int emptyPipeCount;
 
+    public int idOfNextPipeToGenerate = 0;
+    public int idOfPreviousPipeTraveled = 0; // make this 0 so the next pipe to setup after initialization is the very first pipe
+
     private Pipe[] pipes;
 
     private void Awake()
@@ -20,17 +23,21 @@ public class PipeSystem : MonoBehaviour {
         {
             Pipe pipe = pipes[i] = Instantiate<Pipe>(pipePrefab);
             pipe.transform.SetParent(transform, false);
+            pipe.SetPipeSystem(this);
         }
+
+        SetupInitialPipes();
     }
 
     // set up all initial pipes and return the second pipe
-    public Pipe SetupInitialPipes()
+    private void SetupInitialPipes()
     {
         // generate all initial pipes in the system
         for (int i = 0; i < pipes.Length; i++)
         {
             Pipe pipe = pipes[i];
             pipe.Generate(i > emptyPipeCount);
+            pipe.id = i;
             if (i > 0)
             {
                 pipe.AlignWith(pipes[i - 1]);
@@ -40,13 +47,18 @@ public class PipeSystem : MonoBehaviour {
 
         // move the opening of the first pipe to world origin
         transform.localPosition = new Vector3(0f, -pipes[1].CurveRadius);
-        return pipes[1];
     }
 
     // return the very first pipe in the system
     public Pipe GetVeryFirstPipe()
     {
         return pipes[0];
+    }
+
+    // return the second pipe in the system
+    public Pipe GetSecondPipe()
+    {
+        return pipes[1];
     }
 
     // reuse pipes by moving a pipe just traveled through to the end of the system
