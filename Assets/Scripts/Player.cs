@@ -67,7 +67,7 @@ public class Player : MonoBehaviour {
         //    Quaternion.Euler(0f, 0f, systemRotation);
 
         // find distance between center track point and avatar
-        float progressDelta = 0.001f;
+        float progressDelta = 0.01f;
         float distanceToAvatar = Vector3.Distance(centerTrackPointPosition, avatar.transform.position);
         float newDistanceToAvatar = Vector3.Distance(currentPipe.cameraSpline.GetPoint(progress + progressDelta), avatar.transform.position);
 
@@ -95,7 +95,10 @@ public class Player : MonoBehaviour {
         avatar.GetComponent<Rigidbody>().AddForce(centerTrackPointDirection * 5f, ForceMode.Acceleration);
 
         // apply force to make avatar stick to wall
-        avatar.GetComponent<Rigidbody>().AddForce(-GetUpVector() * 5f, ForceMode.Acceleration);
+        Vector3 upVector = GetUpVector();
+        Debug.Log(upVector.magnitude);
+        float magnitudeModifier = (3f - upVector.magnitude) * 10f;
+        avatar.GetComponent<Rigidbody>().AddForce(-upVector * magnitudeModifier, ForceMode.Acceleration);
 
         //UpdateAvatarRotation();
         //hud.SetValues(distanceTraveled, velocity);
