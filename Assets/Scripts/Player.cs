@@ -19,7 +19,8 @@ public class Player : MonoBehaviour {
 
     private float acceleration, velocity;
 
-    public Pipe currentPipe;
+    public Pipe currentPipe; // the current pipe the player is traveling in
+    public Pipe prevPipe; // the pipe the player has just traveled through
 
     private float distanceTraveled;
 
@@ -40,7 +41,8 @@ public class Player : MonoBehaviour {
         worldRotation = 0f;
         acceleration = accelerations[accelerationMode];
         velocity = startVelocity;
-        currentPipe = pipeSystem.SetupFirstPipe();
+        currentPipe = pipeSystem.SetupInitialPipes();
+        prevPipe = pipeSystem.GetVeryFirstPipe();
         //SetupCurrentPipe();
         gameObject.SetActive(true);
         hud.SetValues(distanceTraveled, velocity);
@@ -65,29 +67,32 @@ public class Player : MonoBehaviour {
         //    Quaternion.Euler(0f, 0f, systemRotation);
 
         // find distance between center track point and avatar
+        float progressDelta = 0.001f;
         float distanceToAvatar = Vector3.Distance(centerTrackPointPosition, avatar.transform.position);
-        while (distanceToAvatar > 2f)
-        {
-            Debug.Log(distanceToAvatar);
+        float newDistanceToAvatar = Vector3.Distance(currentPipe.cameraSpline.GetPoint(progress + progressDelta), avatar.transform.position);
 
+        while (newDistanceToAvatar < distanceToAvatar)
+        {
             // move track hook by setting a new value for progress along the spline
-            progress += 0.001f;
+            progress += progressDelta;
 
             // check if we have traveled the entire length of a pipe segment
             // and should set up the next pipe
             if (progress > 1f)
             {
+                prevPipe = currentPipe;
                 currentPipe = pipeSystem.SetupNextPipe();
                 progress -= 1f;
             }
 
             centerTrackPointPosition = currentPipe.cameraSpline.GetPoint(progress);
-            distanceToAvatar = Vector3.Distance(centerTrackPointPosition, avatar.transform.position);
+            distanceToAvatar = newDistanceToAvatar;
+            newDistanceToAvatar = Vector3.Distance(currentPipe.cameraSpline.GetPoint(progress + progressDelta), avatar.transform.position);
         }
 
         // apply force to move forward
         centerTrackPointDirection = currentPipe.cameraSpline.GetVelocity(progress);
-        avatar.GetComponent<Rigidbody>().AddForce(centerTrackPointDirection * 1f, ForceMode.Acceleration);
+        avatar.GetComponent<Rigidbody>().AddForce(centerTrackPointDirection * 5f, ForceMode.Acceleration);
 
         // apply force to make avatar stick to wall
         avatar.GetComponent<Rigidbody>().AddForce(-GetUpVector() * 5f, ForceMode.Acceleration);

@@ -25,6 +25,7 @@ public class Pipe : MonoBehaviour {
     
     public BezierSpline cameraSpline;
     private List<Vector3> centerPoints;
+    private MeshCollider meshCollider;
 
     private void Awake()
     {
@@ -34,23 +35,24 @@ public class Pipe : MonoBehaviour {
         // create camera bezier spline
         cameraSpline = gameObject.AddComponent<BezierSpline>();
         centerPoints = new List<Vector3>();
+
+        // get mesh collider
+        meshCollider = GetComponent<MeshCollider>();
     }
 
     public void Generate(bool withItems = true)
     {
         // create pipe mesh
         curveRadius = Random.Range(minCurveRadius, maxCurveRadius);
-        curveSegmentCount =
-            Random.Range(minCurveSegmentCount, maxCurveSegmentCount + 1);
+        curveSegmentCount = Random.Range(minCurveSegmentCount, maxCurveSegmentCount + 1);
         mesh.Clear();
         SetVertices();
         SetUV();
         SetTriangles();
         mesh.RecalculateNormals();
 
-        // create mesh collider
-        transform.gameObject.AddComponent<MeshCollider>();
-        transform.GetComponent<MeshCollider>().sharedMesh = mesh;
+        // set mesh collider to use newly created mesh
+        meshCollider.sharedMesh = mesh;
 
         // generate camera spline
         cameraSpline.Init(GetCenterPoints().ToArray());
@@ -94,37 +96,38 @@ public class Pipe : MonoBehaviour {
         point.y = originY + curveRadius * Mathf.Cos(u);
         point.z = 0f;
 
-        return transform.TransformPoint(point);
+        //return transform.TransformPoint(point);
+        return point;
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawSphere(new Vector3(0f, 0f, 0f), 0.1f);
-        float uStep = ringDistance / curveRadius;
-        //    float vStep = (2f * Mathf.PI) / pipeSegmentCount;
+    //private void OnDrawGizmos()
+    //{
+    //    Gizmos.DrawSphere(new Vector3(0f, 0f, 0f), 0.1f);
+    //    float uStep = ringDistance / curveRadius;
+    //    //    float vStep = (2f * Mathf.PI) / pipeSegmentCount;
 
-        //    for (int u = 0; u < curveSegmentCount; u++)
-        //    {
-        //        for (int v = 0; v < pipeSegmentCount; v++)
-        //        {
-        //            Vector3 point = GetPointOnTorus(u * uStep, v * vStep);
-        //            Gizmos.color = new Color(
-        //                1f,
-        //                (float)v / pipeSegmentCount,
-        //                (float)u / curveSegmentCount);
-        //            Gizmos.DrawSphere(point, 0.1f);
-        //        }
-        //    }
-        for (int u = 0; u < curveSegmentCount; u++)
-        {
-            Vector3 point = GetPointAtCenterOfPipe(u * uStep);
-            Gizmos.color = new Color(
-                        1f,
-                        1f,
-                        (float)u / curveSegmentCount);
-            Gizmos.DrawSphere(point, 0.1f);
-        }
-    }
+    //    //    for (int u = 0; u < curveSegmentCount; u++)
+    //    //    {
+    //    //        for (int v = 0; v < pipeSegmentCount; v++)
+    //    //        {
+    //    //            Vector3 point = GetPointOnTorus(u * uStep, v * vStep);
+    //    //            Gizmos.color = new Color(
+    //    //                1f,
+    //    //                (float)v / pipeSegmentCount,
+    //    //                (float)u / curveSegmentCount);
+    //    //            Gizmos.DrawSphere(point, 0.1f);
+    //    //        }
+    //    //    }
+    //    for (int u = 0; u < curveSegmentCount; u++)
+    //    {
+    //        Vector3 point = GetPointAtCenterOfPipe(u * uStep);
+    //        Gizmos.color = new Color(
+    //                    1f,
+    //                    1f,
+    //                    (float)u / curveSegmentCount);
+    //        Gizmos.DrawSphere(point, 0.1f);
+    //    }
+    //}
 
     private void SetVertices()
     {
@@ -199,6 +202,7 @@ public class Pipe : MonoBehaviour {
 
     public void AlignWith(Pipe pipe)
     {
+        // random relative rotation
         relativeRotation = Random.Range(0, curveSegmentCount) * 360f / pipeSegmentCount;
 
         transform.SetParent(pipe.transform, false);
@@ -223,7 +227,6 @@ public class Pipe : MonoBehaviour {
         }
 
         return centerPoints;
-
     }
 
     public float CurveRadius

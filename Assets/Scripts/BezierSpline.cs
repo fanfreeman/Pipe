@@ -4,7 +4,6 @@ using System;
 
 public class BezierSpline : MonoBehaviour
 {
-
     public Vector3[] points;
 
     public void Init(Vector3[] arrayOfPoints)
