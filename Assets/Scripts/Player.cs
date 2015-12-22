@@ -5,7 +5,7 @@ public class Player : MonoBehaviour {
 
     public PipeSystem pipeSystem;
 
-    public Avatar avatar;
+    //public Avatar avatar;
 
     [HideInInspector]
     public Pipe currentPipe; // the current pipe the player is traveling in
@@ -30,8 +30,8 @@ public class Player : MonoBehaviour {
     protected virtual void Update()
     {
         // find distance between center track point and avatar
-        float distanceToAvatar = Vector3.Distance(centerTrackPointPosition, avatar.transform.position);
-        float newDistanceToAvatar = Vector3.Distance(currentPipe.cameraSpline.GetPoint(progress + ProgressDelta), avatar.transform.position);
+        float distanceToAvatar = Vector3.Distance(centerTrackPointPosition, transform.position);
+        float newDistanceToAvatar = Vector3.Distance(currentPipe.cameraSpline.GetPoint(progress + ProgressDelta), transform.position);
 
         while (newDistanceToAvatar < distanceToAvatar)
         {
@@ -56,18 +56,18 @@ public class Player : MonoBehaviour {
 
             centerTrackPointPosition = currentPipe.cameraSpline.GetPoint(progress);
             distanceToAvatar = newDistanceToAvatar;
-            newDistanceToAvatar = Vector3.Distance(currentPipe.cameraSpline.GetPoint(progress + ProgressDelta), avatar.transform.position);
+            newDistanceToAvatar = Vector3.Distance(currentPipe.cameraSpline.GetPoint(progress + ProgressDelta), transform.position);
         }
 
-        // apply force to move forward
-        centerTrackPointDirection = currentPipe.cameraSpline.GetVelocity(progress);
-        avatar.GetComponent<Rigidbody>().AddForce(centerTrackPointDirection * 5f, ForceMode.Acceleration);
+        //// apply force to move forward
+        //centerTrackPointDirection = currentPipe.cameraSpline.GetVelocity(progress);
+        //avatar.GetComponent<Rigidbody>().AddForce(centerTrackPointDirection * 5f, ForceMode.Acceleration);
 
-        // apply force to make avatar stick to wall
-        Vector3 upVector = GetUpVector();
-        //Debug.Log(upVector.magnitude);
-        float magnitudeModifier = (3f - upVector.magnitude) * 10f;
-        avatar.GetComponent<Rigidbody>().AddForce(-upVector * magnitudeModifier, ForceMode.Acceleration);
+        //// apply force to make avatar stick to wall
+        //Vector3 upVector = GetUpVector();
+        ////Debug.Log(upVector.magnitude);
+        //float magnitudeModifier = (3f - upVector.magnitude) * 10f;
+        //avatar.GetComponent<Rigidbody>().AddForce(-upVector * magnitudeModifier, ForceMode.Acceleration);
     }
 
     private void OnDrawGizmos()
@@ -78,7 +78,7 @@ public class Player : MonoBehaviour {
 
     public Vector3 GetUpVector()
     {
-        return centerTrackPointPosition - avatar.transform.position;
+        return centerTrackPointPosition - transform.position;
     }
 
     private void UpdateAvatarRotation()

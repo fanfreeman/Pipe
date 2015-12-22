@@ -22,6 +22,6 @@ public class Opponent : Player
         {
 
         }
-        avatar.GetComponent<Rigidbody>().AddForce(-centerTrackPointDirection * progressDiff * 5f, ForceMode.Acceleration);
+        GetComponent<Rigidbody>().AddForce(-centerTrackPointDirection * progressDiff * 5f, ForceMode.Acceleration);
     }
 }

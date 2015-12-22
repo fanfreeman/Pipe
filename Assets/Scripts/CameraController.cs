@@ -26,7 +26,7 @@ public class CameraController : MonoBehaviour {
     private void Update()
     {
         // find distance between camera and avatar
-        float distanceToAvatar = Vector3.Distance(targetPosition, player.avatar.transform.position);
+        float distanceToAvatar = Vector3.Distance(targetPosition, player.transform.position);
         while (distanceToAvatar > 5f)
         {
             // move camera by setting a new value for progress along the spline
@@ -37,7 +37,7 @@ public class CameraController : MonoBehaviour {
                 progress = 0;
             }
             targetPosition = currentPipe.cameraSpline.GetPoint(progress);
-            distanceToAvatar = Vector3.Distance(targetPosition, player.avatar.transform.position);
+            distanceToAvatar = Vector3.Distance(targetPosition, player.transform.position);
         }
         
         //transform.position = targetPosition;
