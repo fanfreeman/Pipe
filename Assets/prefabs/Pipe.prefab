@@ -49,7 +49,9 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_MinimumChartSize: 4
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
@@ -86,9 +88,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pipeRadius: 2
-  pipeSegmentCount: 16
+  pipeSegmentCount: 55
   ringDistance: 1
-  minCurveRadius: 4
+  minCurveRadius: 15
   maxCurveRadius: 20
   minCurveSegmentCount: 10
   maxCurveSegmentCount: 10
@@ -113,11 +115,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: minCurveRadius
-      value: 4
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: maxCurveRadius
-      value: 20
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: minCurveSegmentCount
@@ -137,7 +139,7 @@ Prefab:
       objectReference: {fileID: 2100000, guid: 7a90e85148265b447a54ec8e38a4a8b0, type: 2}
     - target: {fileID: 0}
       propertyPath: pipeSegmentCount
-      value: 16
+      value: 55
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: ringDistance

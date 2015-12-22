@@ -4,10 +4,12 @@ using System.Collections;
 public class Player : MonoBehaviour {
 
     public PipeSystem pipeSystem;
+    public GameObject coolVehicle;
 
     public float rotationVelocity;
-
     public MainMenu mainMenu;
+
+    public float floatingHeight;
 
     public float startVelocity;
 
@@ -61,8 +63,11 @@ public class Player : MonoBehaviour {
         centerTrackPointPosition = currentPipe.cameraSpline.GetPoint(0);
     }
 
+
+
     private void Update()
     {
+        getUpVectorHolder = GetUpVector();
         //pipeSystem.transform.localRotation =
         //    Quaternion.Euler(0f, 0f, systemRotation);
 
@@ -100,9 +105,20 @@ public class Player : MonoBehaviour {
         float magnitudeModifier = (3f - upVector.magnitude) * 10f;
         avatar.GetComponent<Rigidbody>().AddForce(-upVector * magnitudeModifier, ForceMode.Acceleration);
 
+        Vector3 lookAt = Vector3.SmoothDamp(coolVehicle.transform.position, avatar.transform.position, ref coolVehicleLookAtVelocity, 0.05f);
+
+        Vector3 forwardVector =  avatar.transform.position - coolVehicle.transform.position;
+        var newRot = Quaternion.LookRotation(forwardVector ,upVector);
+        coolVehicle.transform.rotation = Quaternion.Lerp(coolVehicle.transform.rotation, newRot,0.5f);
+
+        coolVehicle.transform.position = lookAt;
         //UpdateAvatarRotation();
         //hud.SetValues(distanceTraveled, velocity);
     }
+
+    private Vector3 getUpVectorHolder;
+    private Vector3 coolVehicleLookAtVelocity;
+    private Vector3 coolVehicleLookAtUpVelocity;
 
     private void OnDrawGizmos()
     {
