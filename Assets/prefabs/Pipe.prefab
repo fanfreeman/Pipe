@@ -90,8 +90,8 @@ MonoBehaviour:
   pipeRadius: 2
   pipeSegmentCount: 55
   ringDistance: 1
-  minCurveRadius: 150
-  maxCurveRadius: 200
+  minCurveRadius: 20
+  maxCurveRadius: 100
   minCurveSegmentCount: 55
   maxCurveSegmentCount: 55
   generators:
@@ -115,11 +115,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: minCurveRadius
-      value: 150
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: maxCurveRadius
-      value: 200
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: minCurveSegmentCount
@@ -190,6 +190,10 @@ Prefab:
       value: 
       objectReference: {fileID: 11499324, guid: 6813486b3423ef6489475ba938f2e11e,
         type: 2}
+    - target: {fileID: 0}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 142984}
