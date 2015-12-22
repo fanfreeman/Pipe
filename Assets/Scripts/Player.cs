@@ -61,13 +61,13 @@ public class Player : MonoBehaviour {
 
         // apply force to move forward
         centerTrackPointDirection = currentPipe.cameraSpline.GetVelocity(progress);
-        avatar.GetComponent<Rigidbody>().AddForce(centerTrackPointDirection * 1f, ForceMode.Acceleration);
+        avatar.GetComponent<Rigidbody>().AddForce(centerTrackPointDirection * 5f, ForceMode.Acceleration);
 
         // apply force to make avatar stick to wall
         Vector3 upVector = GetUpVector();
         //Debug.Log(upVector.magnitude);
         float magnitudeModifier = (3f - upVector.magnitude) * 10f;
-        //avatar.GetComponent<Rigidbody>().AddForce(-upVector * magnitudeModifier, ForceMode.Acceleration);
+        avatar.GetComponent<Rigidbody>().AddForce(-upVector * magnitudeModifier, ForceMode.Acceleration);
     }
 
     private void OnDrawGizmos()
