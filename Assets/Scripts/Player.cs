@@ -18,13 +18,20 @@ public class Player : MonoBehaviour {
     [HideInInspector]
     public float progress = 0;
 
+    public GameObject car;
+
     private const float ProgressDelta = 0.01f;
+
+    Vector3 prevPosition;
+    float accumulatedTime = 0;
 
     void Start()
     {
         currentPipe = pipeSystem.GetSecondPipe();
         prevPipe = pipeSystem.GetVeryFirstPipe();
         centerTrackPointPosition = currentPipe.cameraSpline.GetPoint(0);
+
+        prevPosition = Vector3.zero;
     }
 
     protected virtual void Update()
@@ -85,48 +92,50 @@ public class Player : MonoBehaviour {
 
         //transform.LookAt(centerTrackPointDirection);
         //transform.Rotate(90f, 0, 0);
-
         
-
-
+        //Vector3 moveDirection = centerTrackPointDirection;
+        //accumulatedTime += Time.deltaTime;
+        //if (accumulatedTime > 1f)
+        //{
+        //    prevPosition = transform.position;
+        //    accumulatedTime = 0;
+        //}
+        //var newRot = Quaternion.LookRotation(moveDirection);
+        //car.transform.rotation = Quaternion.Lerp(car.transform.rotation, newRot, Time.deltaTime * 10f);
     }
 
     void FixedUpdate()
     {
-        transform.LookAt(centerTrackPointPosition + centerTrackPointDirection);
+        //transform.LookAt(centerTrackPointPosition + centerTrackPointDirection);
 
         // apply force to move forward
         centerTrackPointDirection = currentPipe.cameraSpline.GetVelocity(progress);
         GetComponent<Rigidbody>().AddForce(centerTrackPointDirection * 6f, ForceMode.Acceleration);
 
+
+
         // apply force to make avatar stick to wall
         Vector3 upVector = GetUpVector();
-        //Debug.Log(upVector.magnitude);
         float magnitudeModifier = (3f - upVector.magnitude) * 10f;
         GetComponent<Rigidbody>().AddForce(-upVector * magnitudeModifier, ForceMode.Acceleration);
 
         // hover
-        Ray ray = new Ray(transform.position, -transform.up);
-        RaycastHit hit;
-        float hoverHeight = 1.0f;
-        float hoverForce = 50f;
-        if (Physics.Raycast(ray, out hit, hoverHeight))
-        {
-            float proportionalHeight = (hoverHeight - hit.distance) / hoverHeight;
-            Vector3 appliedHoverForce = upVector * proportionalHeight * hoverForce;
-            GetComponent<Rigidbody>().AddForce(appliedHoverForce, ForceMode.Acceleration);
-        }
-    }
-
-    void UpdateCenterTrackPoint()
-    {
-
+        //Ray ray = new Ray(transform.position, -transform.up);
+        //RaycastHit hit;
+        //float hoverHeight = 1.0f;
+        //float hoverForce = 50f;
+        //if (Physics.Raycast(ray, out hit, hoverHeight))
+        //{
+        //    float proportionalHeight = (hoverHeight - hit.distance) / hoverHeight;
+        //    Vector3 appliedHoverForce = upVector * proportionalHeight * hoverForce;
+        //    GetComponent<Rigidbody>().AddForce(appliedHoverForce, ForceMode.Acceleration);
+        //}
     }
 
     private void OnDrawGizmos()
     {
         // draw the point on the center track closest to the avatar
-        Gizmos.DrawSphere(centerTrackPointPosition, 0.5f);
+        if (Application.isPlaying) Gizmos.DrawSphere(centerTrackPointPosition, 0.5f);
     }
 
     public Vector3 GetUpVector()
