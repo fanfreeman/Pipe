@@ -60,7 +60,16 @@ public class Player : MonoBehaviour {
     void Start()
     {
         StartGame(0);
-        centerTrackPointPosition = currentPipe.cameraSpline.GetPoint(0);
+        currentPipe.GetPlaneOfCurve(
+                avatar.transform.TransformPoint(avatar.transform.position),
+                out centerTrackPointDirection,
+                out centerTrackPointPosition
+        );
+    }
+
+    private void 找到正确的圆心()
+    {
+
     }
 
 
@@ -68,35 +77,34 @@ public class Player : MonoBehaviour {
     private void Update()
     {
         getUpVectorHolder = GetUpVector();
-        //pipeSystem.transform.localRotation =
-        //    Quaternion.Euler(0f, 0f, systemRotation);
 
-        // find distance between center track point and avatar
-        float progressDelta = 0.01f;
-        float distanceToAvatar = Vector3.Distance(centerTrackPointPosition, avatar.transform.position);
-        float newDistanceToAvatar = Vector3.Distance(currentPipe.cameraSpline.GetPoint(progress + progressDelta), avatar.transform.position);
+        currentPipe.GetPlaneOfCurve(
+                avatar.transform.position,
+                out centerTrackPointDirection,
+                out centerTrackPointPosition
+        );
 
-        while (newDistanceToAvatar < distanceToAvatar)
-        {
-            // move track hook by setting a new value for progress along the spline
-            progress += progressDelta;
-
-            // check if we have traveled the entire length of a pipe segment
-            // and should set up the next pipe
-            if (progress > 1f)
-            {
-                prevPipe = currentPipe;
-                currentPipe = pipeSystem.SetupNextPipe();
-                progress -= 1f;
-            }
-
-            centerTrackPointPosition = currentPipe.cameraSpline.GetPoint(progress);
-            distanceToAvatar = newDistanceToAvatar;
-            newDistanceToAvatar = Vector3.Distance(currentPipe.cameraSpline.GetPoint(progress + progressDelta), avatar.transform.position);
-        }
+//        while (newDistanceToAvatar < distanceToAvatar)
+//        {
+//            // move track hook by setting a new value for progress along the spline
+//            progress += progressDelta;
+//
+//            // check if we have traveled the entire length of a pipe segment
+//            // and should set up the next pipe
+//            if (progress > 1f)
+//            {
+//                prevPipe = currentPipe;
+//                currentPipe = pipeSystem.SetupNextPipe();
+//                progress -= 1f;
+//            }
+//
+//            centerTrackPointPosition = currentPipe.cameraSpline.GetPoint(progress);
+//            distanceToAvatar = newDistanceToAvatar;
+//            newDistanceToAvatar = Vector3.Distance(currentPipe.cameraSpline.GetPoint(progress + progressDelta), avatar.transform.position);
+//        }
 
         // apply force to move forward
-        centerTrackPointDirection = currentPipe.cameraSpline.GetVelocity(progress);
+   //     centerTrackPointDirection = currentPipe.cameraSpline.GetVelocity(progress);
         avatar.GetComponent<Rigidbody>().AddForce(centerTrackPointDirection * 5f, ForceMode.Acceleration);
 
         // apply force to make avatar stick to wall
@@ -167,7 +175,6 @@ public class Player : MonoBehaviour {
                 if( rotationInput > 0 )
                 {
                     avatar.GetComponent<Rigidbody>().AddForce(-normal * 12f, ForceMode.Acceleration);
-
                 }
                 else if(rotationInput < 0)
                 {
@@ -176,34 +183,7 @@ public class Player : MonoBehaviour {
             }
         }
         Debug.Log("rotationInput："+rotationInput);
-
-//        avatarRotation +=
-//            rotationVelocity * Time.deltaTime * rotationInput;
-//        if (avatarRotation < 0f)
-//        {
-//            avatarRotation += 360f;
-//        }
-//        else if (avatarRotation >= 360f)
-//        {
-//            avatarRotation -= 360f;
-//        }
-//        rotater.localRotation = Quaternion.Euler(avatarRotation, 0f, 0f);
     }
-
-    //private void SetupCurrentPipe()
-    //{
-    //    deltaToRotation = 360f / (2f * Mathf.PI * currentPipe.CurveRadius);
-    //    worldRotation += currentPipe.RelativeRotation;
-    //    if (worldRotation < 0f)
-    //    {
-    //        worldRotation += 360f;
-    //    }
-    //    else if (worldRotation >= 360f)
-    //    {
-    //        worldRotation -= 360f;
-    //    }
-    //    world.localRotation = Quaternion.Euler(worldRotation, 0f, 0f);
-    //}
 
     public void Die()
     {

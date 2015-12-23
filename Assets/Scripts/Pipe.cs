@@ -83,6 +83,37 @@ public class Pipe : MonoBehaviour {
         return p;
     }
 
+    public void GetPlaneOfCurve(Vector3 worldPositionOfAvatar, out Vector3 directionOutput,out Vector3 pointOutput  )
+    {
+        float u = curveSegmentCount * ringDistance / curveRadius;
+        Vector3 avaterLocation =  transform.TransformPoint(worldPositionOfAvatar);
+        Vector3 p0;
+        float r = curveRadius;
+        p0.x = r * Mathf.Sin(0);
+        p0.y = r * Mathf.Cos(0);
+        p0.z = 0;
+
+        Vector3 p1;
+        r = curveRadius;
+        p1.x = r * Mathf.Sin(u);
+        p1.y = r * Mathf.Cos(u);
+        p1.z = 0;
+        Vector3 normal = new Vector3();
+        Vector3 point = new Vector3();
+        Math3d.PlaneFrom3Points(out normal,out point, p0, p1,Vector3.zero);
+        Vector3 projectionPoint = Math3d.ProjectPointOnPlane(normal, point,avaterLocation);
+
+        pointOutput = projectionPoint.normalized * p0.magnitude;
+        directionOutput = new Vector3(
+                pointOutput.x-pointOutput.x/pointOutput.y,
+                pointOutput.y-pointOutput.x/pointOutput.y,
+                0).normalized;
+        pointOutput = transform.TransformPoint(pointOutput);
+        directionOutput = transform.TransformPoint(directionOutput);
+    }
+
+
+
     // using geometrical formula for a circle, find point along curve
     // in the center of the pipe, in world space
     // u is angle in radians along curve
