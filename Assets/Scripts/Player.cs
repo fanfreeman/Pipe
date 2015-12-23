@@ -31,43 +31,96 @@ public class Player : MonoBehaviour {
     {
         // find distance between center track point and avatar
         float distanceToAvatar = Vector3.Distance(centerTrackPointPosition, transform.position);
-        float newDistanceToAvatar = Vector3.Distance(currentPipe.cameraSpline.GetPoint(progress + ProgressDelta), transform.position);
+        float newDistanceToAvatarUp = Vector3.Distance(currentPipe.cameraSpline.GetPoint(progress + ProgressDelta), transform.position);
+        float newDistanceToAvatarDown = Vector3.Distance(currentPipe.cameraSpline.GetPoint(progress - ProgressDelta), transform.position);
 
-        while (newDistanceToAvatar < distanceToAvatar)
+        if (newDistanceToAvatarUp < newDistanceToAvatarDown)
         {
-            // move track hook by setting a new value for progress along the spline
-            progress += ProgressDelta;
-
-            // check if we have traveled the entire length of a pipe segment
-            // and should set up the next pipe
-            if (progress > 1f)
+            while (newDistanceToAvatarUp < distanceToAvatar)
             {
-                if (currentPipe.id > pipeSystem.idOfPreviousPipeTraveled)
-                {
-                    prevPipe = currentPipe;
-                    currentPipe = pipeSystem.SetupNextPipe();
-                    pipeSystem.idOfPreviousPipeTraveled++;
-                } else {
-                    prevPipe = currentPipe;
-                    currentPipe = pipeSystem.GetSecondPipe();
-                }
-                progress -= 1f;
-            }
+                // move track hook by setting a new value for progress along the spline
+                progress += ProgressDelta;
 
-            centerTrackPointPosition = currentPipe.cameraSpline.GetPoint(progress);
-            distanceToAvatar = newDistanceToAvatar;
-            newDistanceToAvatar = Vector3.Distance(currentPipe.cameraSpline.GetPoint(progress + ProgressDelta), transform.position);
+                // check if we have traveled the entire length of a pipe segment
+                // and should set up the next pipe
+                if (progress > 1f)
+                {
+                    if (currentPipe.id > pipeSystem.idOfPreviousPipeTraveled)
+                    {
+                        prevPipe = currentPipe;
+                        currentPipe = pipeSystem.SetupNextPipe();
+                        pipeSystem.idOfPreviousPipeTraveled++;
+                    }
+                    else {
+                        prevPipe = currentPipe;
+                        currentPipe = pipeSystem.GetSecondPipe();
+                    }
+                    progress -= 1f;
+                }
+
+                centerTrackPointPosition = currentPipe.cameraSpline.GetPoint(progress);
+                distanceToAvatar = newDistanceToAvatarUp;
+                newDistanceToAvatarUp = Vector3.Distance(currentPipe.cameraSpline.GetPoint(progress + ProgressDelta), transform.position);
+            }
+        } else {
+            while (newDistanceToAvatarDown < distanceToAvatar)
+            {
+                // move track hook by setting a new value for progress along the spline
+                progress -= ProgressDelta;
+
+                // check if we have traveled the entire length of a pipe segment
+                // and should set up the next pipe
+                if (progress < 0)
+                {
+                    currentPipe = prevPipe;
+                    progress += 1f;
+                }
+
+                centerTrackPointPosition = currentPipe.cameraSpline.GetPoint(progress);
+                distanceToAvatar = newDistanceToAvatarDown;
+                newDistanceToAvatarDown = Vector3.Distance(currentPipe.cameraSpline.GetPoint(progress - ProgressDelta), transform.position);
+            }
         }
 
-        //// apply force to move forward
-        //centerTrackPointDirection = currentPipe.cameraSpline.GetVelocity(progress);
-        //avatar.GetComponent<Rigidbody>().AddForce(centerTrackPointDirection * 5f, ForceMode.Acceleration);
 
-        //// apply force to make avatar stick to wall
-        //Vector3 upVector = GetUpVector();
-        ////Debug.Log(upVector.magnitude);
-        //float magnitudeModifier = (3f - upVector.magnitude) * 10f;
-        //avatar.GetComponent<Rigidbody>().AddForce(-upVector * magnitudeModifier, ForceMode.Acceleration);
+        //transform.LookAt(centerTrackPointDirection);
+        //transform.Rotate(90f, 0, 0);
+
+        
+
+
+    }
+
+    void FixedUpdate()
+    {
+        transform.LookAt(centerTrackPointPosition + centerTrackPointDirection);
+
+        // apply force to move forward
+        centerTrackPointDirection = currentPipe.cameraSpline.GetVelocity(progress);
+        GetComponent<Rigidbody>().AddForce(centerTrackPointDirection * 6f, ForceMode.Acceleration);
+
+        // apply force to make avatar stick to wall
+        Vector3 upVector = GetUpVector();
+        //Debug.Log(upVector.magnitude);
+        float magnitudeModifier = (3f - upVector.magnitude) * 10f;
+        GetComponent<Rigidbody>().AddForce(-upVector * magnitudeModifier, ForceMode.Acceleration);
+
+        // hover
+        Ray ray = new Ray(transform.position, -transform.up);
+        RaycastHit hit;
+        float hoverHeight = 1.0f;
+        float hoverForce = 50f;
+        if (Physics.Raycast(ray, out hit, hoverHeight))
+        {
+            float proportionalHeight = (hoverHeight - hit.distance) / hoverHeight;
+            Vector3 appliedHoverForce = upVector * proportionalHeight * hoverForce;
+            GetComponent<Rigidbody>().AddForce(appliedHoverForce, ForceMode.Acceleration);
+        }
+    }
+
+    void UpdateCenterTrackPoint()
+    {
+
     }
 
     private void OnDrawGizmos()
