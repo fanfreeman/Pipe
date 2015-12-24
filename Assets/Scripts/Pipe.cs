@@ -27,6 +27,14 @@ public class Pipe : MonoBehaviour {
     private List<Vector3> centerPoints;
     private MeshCollider meshCollider;
 
+    //三点一平面
+    private Vector3 p0 = Vector3.zero;
+    private Vector3 p1 = Vector3.zero;
+    private Vector3 worldPositionOfAvatar = new Vector3(111,222,333);
+
+    private float angleOfPiple;
+    // private float
+
     private void Awake()
     {
         GetComponent<MeshFilter>().mesh = mesh = new Mesh();
@@ -68,6 +76,16 @@ public class Pipe : MonoBehaviour {
         {
             generators[Random.Range(0, generators.Length)].GenerateItems(this);
         }
+
+        float u = curveSegmentCount * ringDistance / curveRadius;
+        p0.x = curveRadius * Mathf.Sin(0);
+        p0.y = curveRadius * Mathf.Cos(0);
+        p0.z = 0;
+
+        p1.x = curveRadius * Mathf.Sin(u);
+        p1.y = curveRadius * Mathf.Cos(u);
+        p1.z = 0;
+        angleOfPiple = Vector3.Angle(p0,p1);
     }
 
     // using geometrical formula for a torus, find point on the torus in world space
@@ -83,36 +101,95 @@ public class Pipe : MonoBehaviour {
         return p;
     }
 
-    public void GetPlaneOfCurve(Vector3 worldPositionOfAvatar, out Vector3 directionOutput,out Vector3 pointOutput  )
+    public void GetPlaneOfCurve(Vector3 worldPositionOfAvatar, ref Vector3 directionOutput,ref Vector3 pointOutput,ref float progress)
     {
-        float u = curveSegmentCount * ringDistance / curveRadius;
-        Vector3 avaterLocation =  transform.TransformPoint(worldPositionOfAvatar);
-        Vector3 p0;
-        float r = curveRadius;
-        p0.x = r * Mathf.Sin(0);
-        p0.y = r * Mathf.Cos(0);
-        p0.z = 0;
+        Vector3 p0world;
+        Vector3 p1world;
+        this.worldPositionOfAvatar = transform.InverseTransformPoint(worldPositionOfAvatar);
 
-        Vector3 p1;
-        r = curveRadius;
-        p1.x = r * Mathf.Sin(u);
-        p1.y = r * Mathf.Cos(u);
-        p1.z = 0;
+        p0world = transform.TransformPoint(p0);
+        p1world = transform.TransformPoint(p1);
+
+        Vector3 normal = new Vector3();
+        Vector3 point = new Vector3();
+        //计算圆弧所在的平面
+        Math3d.PlaneFrom3Points(out normal,out point, p0, p1,Vector3.zero);
+
+        //计算车的位置在平面上的投影点
+        Vector3 projectionPoint = Math3d.ProjectPointOnPlane(normal, point, worldPositionOfAvatar);
+        Vector3 pointCenter = projectionPoint.normalized * p0.magnitude;
+
+        //转换为世界坐标输出
+        pointOutput = transform.TransformPoint(pointCenter);
+        Vector3 pointCenterDirection = new Vector3(
+                1,
+                -pointCenter.x/pointCenter.y,
+                0).normalized;
+        directionOutput = transform.TransformVector(pointCenterDirection).normalized;
+        //计算progress
+        //圆弧角度不大于270度即可
+        float angle = angle_360(p0, pointCenter);
+        if(angle >= 270)
+        {
+            progress = (270-360)/angleOfPiple;
+        }else{
+            progress = angle/angleOfPiple;
+        }
+
+    }
+
+    //计算夹角的角度 0~360
+    private static float angle_360(Vector3 from_, Vector3 to_){
+
+        Vector3 v3 = Vector3.Cross(from_,to_);
+
+        if(v3.z > 0)
+
+            return Vector3.Angle(from_,to_);
+
+        else
+
+            return 360-Vector3.Angle(from_,to_);
+
+    }
+
+    private void OnDrawGizmos()
+    {
+        Vector3 p0world;
+        Vector3 p1world;
+
+        //计算圆弧所在的平面
+        p0world = transform.TransformPoint(p0);
+        p1world = transform.TransformPoint(p1);
+        Gizmos.color = Color.green;
+        Gizmos.DrawSphere(p0world, 0.5f);
+        Gizmos.DrawSphere(p1world, 0.5f);
+
+        Gizmos.color = Color.blue;
+        Gizmos.DrawSphere(transform.TransformPoint(Vector3.zero), 0.5f);
+
+        //计算车的位置在平面上的投影点
         Vector3 normal = new Vector3();
         Vector3 point = new Vector3();
         Math3d.PlaneFrom3Points(out normal,out point, p0, p1,Vector3.zero);
-        Vector3 projectionPoint = Math3d.ProjectPointOnPlane(normal, point,avaterLocation);
 
-        pointOutput = projectionPoint.normalized * p0.magnitude;
-        directionOutput = new Vector3(
-                pointOutput.x-pointOutput.x/pointOutput.y,
-                pointOutput.y-pointOutput.x/pointOutput.y,
-                0).normalized;
-        pointOutput = transform.TransformPoint(pointOutput);
-        directionOutput = transform.TransformPoint(directionOutput);
+        Vector3 projectionPoint = Math3d.ProjectPointOnPlane(normal, point, worldPositionOfAvatar);
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(transform.TransformPoint(projectionPoint), 0.5f);
+
+        //get center
+        Vector3 pointCenter = projectionPoint.normalized * p0.magnitude;
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawSphere(transform.TransformPoint(pointCenter), 0.3f);
+
+        Vector3 pointCenterDirection = new Vector3(
+                1,
+                -pointCenter.x/pointCenter.y,
+                0);
+        //圆切线
+        Gizmos.DrawLine(transform.TransformPoint(pointCenter),
+                transform.TransformPoint(pointCenter)+transform.TransformVector(pointCenterDirection).normalized*5f);
     }
-
-
 
     // using geometrical formula for a circle, find point along curve
     // in the center of the pipe, in world space

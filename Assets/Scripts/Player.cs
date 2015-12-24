@@ -30,8 +30,8 @@ public class Player : MonoBehaviour {
 
     private float worldRotation, avatarRotation;
     
-    private Vector3 centerTrackPointPosition;
-    private Vector3 centerTrackPointDirection;
+    private Vector3 centerTrackPointPosition = Vector3.zero;
+    private Vector3 centerTrackPointDirection = Vector3.zero;
     private float progress = 0;
 
     private float progressDelta;
@@ -62,56 +62,35 @@ public class Player : MonoBehaviour {
         StartGame(0);
         currentPipe.GetPlaneOfCurve(
                 avatar.transform.TransformPoint(avatar.transform.position),
-                out centerTrackPointDirection,
-                out centerTrackPointPosition
+                ref centerTrackPointDirection,
+                ref centerTrackPointPosition,
+                ref progress
         );
     }
-
-    private void 找到正确的圆心()
-    {
-
-    }
-
-
 
     private void Update()
     {
         getUpVectorHolder = GetUpVector();
 
         currentPipe.GetPlaneOfCurve(
-                avatar.transform.position,
-                out centerTrackPointDirection,
-                out centerTrackPointPosition
+                transform.TransformPoint(avatar.transform.position),
+                ref centerTrackPointDirection,
+                ref centerTrackPointPosition,
+                ref progress
         );
 
-//        while (newDistanceToAvatar < distanceToAvatar)
-//        {
-//            // move track hook by setting a new value for progress along the spline
-//            progress += progressDelta;
-//
-//            // check if we have traveled the entire length of a pipe segment
-//            // and should set up the next pipe
-//            if (progress > 1f)
-//            {
-//                prevPipe = currentPipe;
-//                currentPipe = pipeSystem.SetupNextPipe();
-//                progress -= 1f;
-//            }
-//
-//            centerTrackPointPosition = currentPipe.cameraSpline.GetPoint(progress);
-//            distanceToAvatar = newDistanceToAvatar;
-//            newDistanceToAvatar = Vector3.Distance(currentPipe.cameraSpline.GetPoint(progress + progressDelta), avatar.transform.position);
-//        }
+        Debug.Log("progress:"+progress);
+//        if(progress > 1)
+//            currentPipe = pipeSystem.SetupNextPipe();
+
 
         // apply force to move forward
-   //     centerTrackPointDirection = currentPipe.cameraSpline.GetVelocity(progress);
-        avatar.GetComponent<Rigidbody>().AddForce(centerTrackPointDirection * 5f, ForceMode.Acceleration);
+    //    avatar.GetComponent<Rigidbody>().AddForce(centerTrackPointDirection * 5f, ForceMode.Acceleration);
 
         // apply force to make avatar stick to wall
         Vector3 upVector = GetUpVector();
-        Debug.Log(upVector.magnitude);
         float magnitudeModifier = (3f - upVector.magnitude) * 10f;
-        avatar.GetComponent<Rigidbody>().AddForce(-upVector * magnitudeModifier, ForceMode.Acceleration);
+        //avatar.GetComponent<Rigidbody>().AddForce(-upVector * magnitudeModifier, ForceMode.Acceleration);
 
         Vector3 lookAt = Vector3.SmoothDamp(coolVehicle.transform.position, avatar.transform.position, ref coolVehicleLookAtVelocity, 0.05f);
 
@@ -133,7 +112,9 @@ public class Player : MonoBehaviour {
     private void OnDrawGizmos()
     {
         // draw the point on the center track closest to the avatar
-        Gizmos.DrawSphere(centerTrackPointPosition, 0.5f);
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawSphere(centerTrackPointPosition, 0.7f);
+        Gizmos.DrawLine(centerTrackPointPosition, centerTrackPointPosition + centerTrackPointDirection * 6f);
     }
 
     public Vector3 GetUpVector()
@@ -182,7 +163,6 @@ public class Player : MonoBehaviour {
                 }
             }
         }
-        Debug.Log("rotationInput："+rotationInput);
     }
 
     public void Die()
