@@ -70,16 +70,14 @@ public class Player : MonoBehaviour {
 
     private void Update()
     {
-
         currentPipe.GetPlaneOfCurve(
                 avatar.transform.position,
                 ref centerTrackPointDirection,
                 ref centerTrackPointPosition,
                 ref progress
         );
-        getUpVectorHolder = GetUpVector();
 
-        Debug.Log("progress:"+progress);
+        //Debug.Log("progress:"+progress);
         if(progress >= 1)
             currentPipe = pipeSystem.SetupNextPipe();
 
@@ -94,38 +92,45 @@ public class Player : MonoBehaviour {
 
         //Vector3 lookAt = avatar.transform.position;// Vector3.SmoothDamp(coolVehicle.transform.position, avatar.transform.position, ref coolVehicleLookAtVelocity, 0.03f);
 
-        Vector3 forwardVector =  avatar.transform.position - coolVehicle.transform.position;
-        var newRot = Quaternion.LookRotation(forwardVector ,upVector);
-     //   coolVehicle.transform.rotation = Quaternion.Lerp(coolVehicle.transform.rotation, newRot, );
+        //Vector3 forwardVector =  avatar.transform.position - coolVehicle.transform.position;
+        //var newRot = Quaternion.LookRotation(forwardVector ,upVector);
+        //   coolVehicle.transform.rotation = Quaternion.Lerp(coolVehicle.transform.rotation, newRot, );
 
-        coolVehicle.transform.LookAt(centerTrackPointPosition+centerTrackPointDirection);
-        coolVehicle.transform.position = centerTrackPointPosition;
+
         //UpdateAvatarRotation();
         //hud.SetValues(distanceTraveled, velocity);
-        Vector3 forceDirection = centerTrackPointDirection;
-        UpdateAvatarRotation(forceDirection, centerTrackPointPosition);
-    }
 
-    private Vector3 getUpVectorHolder;
+        // update camera position
+        coolVehicle.transform.position = avatar.transform.position;
+
+        // update camera rotation
+        Quaternion cameraRotation = Quaternion.LookRotation(centerTrackPointPosition + centerTrackPointDirection * 5f - avatar.transform.position, GetUpVector());
+        Debug.Log(cameraRotation.eulerAngles.ToString());
+        //coolVehicle.transform.rotation = cameraRotation;
+        coolVehicle.transform.rotation = Quaternion.RotateTowards(coolVehicle.transform.rotation, cameraRotation, Time.deltaTime * 100f);
+
+        // update avatar turning according to user input
+        UpdateAvatarRotation(centerTrackPointDirection, centerTrackPointPosition);
+    }
+    
     private Vector3 coolVehicleLookAtVelocity;
     private Vector3 coolVehicleLookAtUpVelocity;
 
     private void OnDrawGizmos()
     {
-        // draw the point on the center track closest to the avatar
+        // draw the center track point
         Gizmos.color = Color.cyan;
         Gizmos.DrawSphere(centerTrackPointPosition, 0.3f);
-        Gizmos.DrawLine(avatar.transform.position, avatar.transform.position + centerTrackPointDirection * 6f);
-        Gizmos.DrawLine(avatar.transform.position, avatar.transform.position - GetUpVector() * 6f);
-        Gizmos.color = Color.blue;
-        //Gizmos.DrawLine(centerTrackPointPosition, currentPipe.transform.TransformPoint(Vector3.zero));
-        //Gizmos.DrawLine(centerTrackPointPosition, avatar.transform.position);
-        //Gizmos.DrawLine(avatar.transform.position, currentPipe.transform.TransformPoint(Vector3.zero));
+
+        // draw the center track direction
+        Gizmos.DrawLine(centerTrackPointPosition, centerTrackPointPosition + centerTrackPointDirection * 5f);
+
+        //Gizmos.DrawLine(avatar.transform.position, avatar.transform.position + centerTrackPointDirection * 6f);
+        //Gizmos.DrawLine(avatar.transform.position, avatar.transform.position - GetUpVector() * 6f);
 
         Gizmos.color = Color.red;
         Gizmos.DrawLine(avatar.transform.position, avatar.transform.position + forceL * 4f);
         Gizmos.DrawLine(avatar.transform.position, avatar.transform.position - forceR * 4f);
-
     }
 
     public Vector3 GetUpVector()

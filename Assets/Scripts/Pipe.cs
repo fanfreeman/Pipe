@@ -196,37 +196,36 @@ public class Pipe : MonoBehaviour {
 
         //计算圆弧所在的平面
 
+        // draw pipe beginning
         p0world = transform.TransformPoint(p0);
-        p1world = transform.TransformPoint(p1);
         Gizmos.color = Color.gray;
         Gizmos.DrawSphere(p0world, 0.5f);
+
+        // draw pipe ending
+        p1world = transform.TransformPoint(p1);
         Gizmos.color = Color.green;
         Gizmos.DrawSphere(p1world, 0.5f);
 
-        Gizmos.color = Color.blue;
-//        Gizmos.DrawSphere(transform.TransformPoint(Vector3.zero), 0.2f);
+        //Gizmos.color = Color.blue;
+        //        Gizmos.DrawSphere(transform.TransformPoint(Vector3.zero), 0.2f);
 
         //计算车的位置在平面上的投影点
-        Vector3 normal = new Vector3();
-        Vector3 point = new Vector3();
-        Math3d.PlaneFrom3Points(out normal,out point, p0, p1,Vector3.zero);
+        //Vector3 normal = new Vector3();
+        //Vector3 point = new Vector3();
+        //Math3d.PlaneFrom3Points(out normal,out point, p0, p1,Vector3.zero);
+        //Vector3 projectionPoint = Math3d.ProjectPointOnPlane(normal, point, positionOfAvatar);
+        //Gizmos.color = Color.red;
+        //Gizmos.DrawSphere(transform.TransformPoint(projectionPoint), 0.2f);
 
-        Vector3 projectionPoint = Math3d.ProjectPointOnPlane(normal, point, positionOfAvatar);
-        Gizmos.color = Color.red;
-        Gizmos.DrawSphere(transform.TransformPoint(projectionPoint), 0.2f);
-
-        //get center
-        Vector3 pointCenter = projectionPoint.normalized * p0.magnitude;
-        Gizmos.color = Color.yellow;
-//        Gizmos.DrawSphere(transform.TransformPoint(pointCenter), 0.3f);
-
-        Vector3 pointCenterDirection = new Vector3(
-                1,
-                -pointCenter.x/pointCenter.y,
-                0);
-        //圆切线
-        Gizmos.DrawLine(transform.TransformPoint(pointCenter),
-                transform.TransformPoint(pointCenter)+transform.TransformVector(pointCenterDirection).normalized*5f);
+        // get center track point, draw 圆切线
+        //Vector3 pointCenter = projectionPoint.normalized * p0.magnitude;
+        //Gizmos.color = Color.yellow;
+        //Vector3 pointCenterDirection = new Vector3(
+        //        1,
+        //        -pointCenter.x/pointCenter.y,
+        //        0);
+        //Gizmos.DrawLine(transform.TransformPoint(pointCenter),
+        //        transform.TransformPoint(pointCenter)+transform.TransformVector(pointCenterDirection).normalized*5f);
     }
 
     // using geometrical formula for a circle, find point along curve
