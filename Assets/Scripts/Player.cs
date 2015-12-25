@@ -61,7 +61,7 @@ public class Player : MonoBehaviour {
     {
         StartGame(0);
         currentPipe.GetPlaneOfCurve(
-                avatar.transform.TransformPoint(avatar.transform.position),
+                transform.TransformPoint(avatar.transform.position),
                 ref centerTrackPointDirection,
                 ref centerTrackPointPosition,
                 ref progress
@@ -73,19 +73,19 @@ public class Player : MonoBehaviour {
         getUpVectorHolder = GetUpVector();
 
         currentPipe.GetPlaneOfCurve(
-                transform.TransformPoint(avatar.transform.position),
+                avatar.transform.position,
                 ref centerTrackPointDirection,
                 ref centerTrackPointPosition,
                 ref progress
         );
 
         Debug.Log("progress:"+progress);
-        if(progress > 1)
+        if(progress >= 1)
             currentPipe = pipeSystem.SetupNextPipe();
 
 
         // apply force to move forward
-        avatar.GetComponent<Rigidbody>().AddForce(centerTrackPointDirection * 5f, ForceMode.Acceleration);
+        avatar.GetComponent<Rigidbody>().AddForce(centerTrackPointDirection * 15f, ForceMode.Acceleration);
 
         // apply force to make avatar stick to wall
         Vector3 upVector = GetUpVector();
@@ -116,6 +116,10 @@ public class Player : MonoBehaviour {
         Gizmos.DrawSphere(centerTrackPointPosition, 0.3f);
         Gizmos.DrawLine(avatar.transform.position, avatar.transform.position + centerTrackPointDirection * 6f);
         Gizmos.DrawLine(avatar.transform.position, avatar.transform.position - GetUpVector() * 6f);
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(centerTrackPointPosition, currentPipe.transform.TransformPoint(Vector3.zero));
+        Gizmos.DrawLine(centerTrackPointPosition, avatar.transform.position);
+        Gizmos.DrawLine(avatar.transform.position, currentPipe.transform.TransformPoint(Vector3.zero));
     }
 
     public Vector3 GetUpVector()
