@@ -30,7 +30,7 @@ public class Pipe : MonoBehaviour {
     //三点一平面
     private Vector3 p0 = Vector3.zero;
     private Vector3 p1 = Vector3.zero;
-    private Vector3 worldPositionOfAvatar = new Vector3(111,222,333);
+    private Vector3 positionOfAvatar = new Vector3(111,222,333);
 
     private float angleOfPiple;
     // private float
@@ -105,7 +105,7 @@ public class Pipe : MonoBehaviour {
     {
         Vector3 p0world;
         Vector3 p1world;
-        this.worldPositionOfAvatar = transform.InverseTransformPoint(worldPositionOfAvatar);
+        this.positionOfAvatar = transform.InverseTransformPoint(worldPositionOfAvatar);
 
         p0world = transform.TransformPoint(p0);
         p1world = transform.TransformPoint(p1);
@@ -116,7 +116,7 @@ public class Pipe : MonoBehaviour {
         Math3d.PlaneFrom3Points(out normal,out point, p0, p1,Vector3.zero);
 
         //计算车的位置在平面上的投影点
-        Vector3 projectionPoint = Math3d.ProjectPointOnPlane(normal, point, worldPositionOfAvatar);
+        Vector3 projectionPoint = Math3d.ProjectPointOnPlane(normal, point, positionOfAvatar);
         Vector3 pointCenter = projectionPoint.normalized * p0.magnitude;
 
         //转换为世界坐标输出
@@ -173,7 +173,7 @@ public class Pipe : MonoBehaviour {
         Vector3 point = new Vector3();
         Math3d.PlaneFrom3Points(out normal,out point, p0, p1,Vector3.zero);
 
-        Vector3 projectionPoint = Math3d.ProjectPointOnPlane(normal, point, worldPositionOfAvatar);
+        Vector3 projectionPoint = Math3d.ProjectPointOnPlane(normal, point, positionOfAvatar);
         Gizmos.color = Color.red;
         Gizmos.DrawSphere(transform.TransformPoint(projectionPoint), 0.5f);
 
