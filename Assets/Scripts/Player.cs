@@ -80,17 +80,17 @@ public class Player : MonoBehaviour {
         );
 
         Debug.Log("progress:"+progress);
-//        if(progress > 1)
-//            currentPipe = pipeSystem.SetupNextPipe();
+        if(progress > 1)
+            currentPipe = pipeSystem.SetupNextPipe();
 
 
         // apply force to move forward
-    //    avatar.GetComponent<Rigidbody>().AddForce(centerTrackPointDirection * 5f, ForceMode.Acceleration);
+        avatar.GetComponent<Rigidbody>().AddForce(centerTrackPointDirection * 5f, ForceMode.Acceleration);
 
         // apply force to make avatar stick to wall
         Vector3 upVector = GetUpVector();
         float magnitudeModifier = (3f - upVector.magnitude) * 10f;
-        //avatar.GetComponent<Rigidbody>().AddForce(-upVector * magnitudeModifier, ForceMode.Acceleration);
+        avatar.GetComponent<Rigidbody>().AddForce(-upVector * magnitudeModifier, ForceMode.Acceleration);
 
         Vector3 lookAt = Vector3.SmoothDamp(coolVehicle.transform.position, avatar.transform.position, ref coolVehicleLookAtVelocity, 0.05f);
 
@@ -113,8 +113,9 @@ public class Player : MonoBehaviour {
     {
         // draw the point on the center track closest to the avatar
         Gizmos.color = Color.cyan;
-        Gizmos.DrawSphere(centerTrackPointPosition, 0.7f);
-        Gizmos.DrawLine(centerTrackPointPosition, centerTrackPointPosition + centerTrackPointDirection * 6f);
+        Gizmos.DrawSphere(centerTrackPointPosition, 0.3f);
+        Gizmos.DrawLine(avatar.transform.position, avatar.transform.position + centerTrackPointDirection * 6f);
+        Gizmos.DrawLine(avatar.transform.position, avatar.transform.position - GetUpVector() * 6f);
     }
 
     public Vector3 GetUpVector()
