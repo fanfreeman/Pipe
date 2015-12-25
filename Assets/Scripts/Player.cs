@@ -92,7 +92,7 @@ public class Player : MonoBehaviour {
         float magnitudeModifier = (3f - upVector.magnitude) * 10f;
         avatar.GetComponent<Rigidbody>().AddForce(-upVector * magnitudeModifier, ForceMode.Acceleration);
 
-        Vector3 lookAt = avatar.transform.position;// Vector3.SmoothDamp(coolVehicle.transform.position, avatar.transform.position, ref coolVehicleLookAtVelocity, 0.03f);
+        //Vector3 lookAt = avatar.transform.position;// Vector3.SmoothDamp(coolVehicle.transform.position, avatar.transform.position, ref coolVehicleLookAtVelocity, 0.03f);
 
         Vector3 forwardVector =  avatar.transform.position - coolVehicle.transform.position;
         var newRot = Quaternion.LookRotation(forwardVector ,upVector);
@@ -118,9 +118,9 @@ public class Player : MonoBehaviour {
         Gizmos.DrawLine(avatar.transform.position, avatar.transform.position + centerTrackPointDirection * 6f);
         Gizmos.DrawLine(avatar.transform.position, avatar.transform.position - GetUpVector() * 6f);
         Gizmos.color = Color.blue;
-        Gizmos.DrawLine(centerTrackPointPosition, currentPipe.transform.TransformPoint(Vector3.zero));
-        Gizmos.DrawLine(centerTrackPointPosition, avatar.transform.position);
-        Gizmos.DrawLine(avatar.transform.position, currentPipe.transform.TransformPoint(Vector3.zero));
+        //Gizmos.DrawLine(centerTrackPointPosition, currentPipe.transform.TransformPoint(Vector3.zero));
+        //Gizmos.DrawLine(centerTrackPointPosition, avatar.transform.position);
+        //Gizmos.DrawLine(avatar.transform.position, currentPipe.transform.TransformPoint(Vector3.zero));
 
         Gizmos.color = Color.red;
         Gizmos.DrawLine(avatar.transform.position, avatar.transform.position + forceL * 4f);
