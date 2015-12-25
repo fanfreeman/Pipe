@@ -70,7 +70,6 @@ public class Player : MonoBehaviour {
 
     private void Update()
     {
-        getUpVectorHolder = GetUpVector();
 
         currentPipe.GetPlaneOfCurve(
                 avatar.transform.position,
@@ -78,6 +77,7 @@ public class Player : MonoBehaviour {
                 ref centerTrackPointPosition,
                 ref progress
         );
+        getUpVectorHolder = GetUpVector();
 
         Debug.Log("progress:"+progress);
         if(progress >= 1)
@@ -92,13 +92,14 @@ public class Player : MonoBehaviour {
         float magnitudeModifier = (3f - upVector.magnitude) * 10f;
         avatar.GetComponent<Rigidbody>().AddForce(-upVector * magnitudeModifier, ForceMode.Acceleration);
 
-        Vector3 lookAt = Vector3.SmoothDamp(coolVehicle.transform.position, avatar.transform.position, ref coolVehicleLookAtVelocity, 0.05f);
+        Vector3 lookAt = avatar.transform.position;// Vector3.SmoothDamp(coolVehicle.transform.position, avatar.transform.position, ref coolVehicleLookAtVelocity, 0.03f);
 
         Vector3 forwardVector =  avatar.transform.position - coolVehicle.transform.position;
         var newRot = Quaternion.LookRotation(forwardVector ,upVector);
-        coolVehicle.transform.rotation = Quaternion.Lerp(coolVehicle.transform.rotation, newRot,0.5f);
+     //   coolVehicle.transform.rotation = Quaternion.Lerp(coolVehicle.transform.rotation, newRot, );
 
-        coolVehicle.transform.position = lookAt;
+        coolVehicle.transform.LookAt(centerTrackPointPosition+centerTrackPointDirection);
+        coolVehicle.transform.position = centerTrackPointPosition;
         //UpdateAvatarRotation();
         //hud.SetValues(distanceTraveled, velocity);
         Vector3 forceDirection = centerTrackPointDirection;
@@ -120,6 +121,11 @@ public class Player : MonoBehaviour {
         Gizmos.DrawLine(centerTrackPointPosition, currentPipe.transform.TransformPoint(Vector3.zero));
         Gizmos.DrawLine(centerTrackPointPosition, avatar.transform.position);
         Gizmos.DrawLine(avatar.transform.position, currentPipe.transform.TransformPoint(Vector3.zero));
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(avatar.transform.position, avatar.transform.position + forceL * 4f);
+        Gizmos.DrawLine(avatar.transform.position, avatar.transform.position - forceR * 4f);
+
     }
 
     public Vector3 GetUpVector()
@@ -151,7 +157,7 @@ public class Player : MonoBehaviour {
         }
         else {
             rotationInput = Input.GetAxis("Horizontal");
-            if(rotationInput != 0)
+            if(true)
             {
                 Vector3 goAheadVector = avatar.transform.position + forceDirection;
                 Vector3 normal = new Vector3();
@@ -161,14 +167,18 @@ public class Player : MonoBehaviour {
                 if( rotationInput > 0 )
                 {
                     avatar.GetComponent<Rigidbody>().AddForce(-normal * 12f, ForceMode.Acceleration);
+                    forceL = - normal;
                 }
                 else if(rotationInput < 0)
                 {
                     avatar.GetComponent<Rigidbody>().AddForce(normal * 12f, ForceMode.Acceleration);
+                    forceR = normal;
                 }
             }
         }
     }
+    private Vector3 forceL = Vector3.one;
+    private Vector3 forceR = Vector3.one;
 
     public void Die()
     {

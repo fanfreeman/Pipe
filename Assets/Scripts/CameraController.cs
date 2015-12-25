@@ -40,8 +40,6 @@ public class CameraController : MonoBehaviour {
             distanceToAvatar = Vector3.Distance(targetPosition, player.avatar.transform.position);
         }
         
-        //transform.position = targetPosition;
-        //targetPosition = player.GetCenterTrackHookPosition();
         transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, 0.3f);
 
         // update camera rotation by look at avatar

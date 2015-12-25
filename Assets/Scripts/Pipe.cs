@@ -138,7 +138,14 @@ public class Pipe : MonoBehaviour {
         {
             progress = (angle-360)/angleOfPiple;
         }
+    }
 
+    public Vector3 GetCenterPointByProgress(float progress)
+    {
+        float angle;
+        angle = progress*angleOfPiple;
+        Vector3 centerPoint = Quaternion.AngleAxis(angle, Vector3.back) * p0;
+        return centerPoint;
     }
 
     //计算夹角的角度 0~360
@@ -158,6 +165,32 @@ public class Pipe : MonoBehaviour {
 
     private void OnDrawGizmos()
     {
+        //测试progress
+//        Gizmos.color = Color.magenta;
+//        Vector3 drawObjectRaw = GetCenterPointByProgress(0.5f);
+//        Vector3 drawObject = transform.TransformPoint(drawObjectRaw);
+//        Gizmos.DrawSphere(drawObject, 0.2f);
+//
+//        Gizmos.color = Color.blue;
+//        drawObjectRaw = GetCenterPointByProgress(0.8f);
+//        drawObject = transform.TransformPoint(drawObjectRaw);
+//        Gizmos.DrawSphere(drawObject, 0.2f);
+//
+//        Gizmos.color = Color.yellow;
+//        drawObjectRaw = GetCenterPointByProgress(0.3f);
+//        drawObject = transform.TransformPoint(drawObjectRaw);
+//        Gizmos.DrawSphere(drawObject, 0.2f);
+//
+//        drawObjectRaw = GetCenterPointByProgress(1.3f);
+//        drawObject = transform.TransformPoint(drawObjectRaw);
+//        Gizmos.DrawSphere(drawObject, 0.2f);
+//
+//        drawObjectRaw = GetCenterPointByProgress(-0.3f);
+//        drawObject = transform.TransformPoint(drawObjectRaw);
+//        Gizmos.DrawSphere(drawObject, 0.2f);
+
+        //测试progress end
+
         Vector3 p0world;
         Vector3 p1world;
 
