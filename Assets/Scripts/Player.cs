@@ -105,9 +105,10 @@ public class Player : MonoBehaviour {
 
         // update camera rotation
         Quaternion cameraRotation = Quaternion.LookRotation(centerTrackPointPosition + centerTrackPointDirection * 5f - avatar.transform.position, GetUpVector());
-        Debug.Log(cameraRotation.eulerAngles.ToString());
+        //Debug.Log(cameraRotation.eulerAngles.ToString());
         //coolVehicle.transform.rotation = cameraRotation;
-        coolVehicle.transform.rotation = Quaternion.RotateTowards(coolVehicle.transform.rotation, cameraRotation, Time.deltaTime * 100f);
+        //coolVehicle.transform.rotation = Quaternion.RotateTowards(coolVehicle.transform.rotation, cameraRotation, Time.deltaTime * 100f);
+        iTween.RotateUpdate(coolVehicle, iTween.Hash("rotation", cameraRotation.eulerAngles, "time", .1f));
 
         // update avatar turning according to user input
         UpdateAvatarRotation(centerTrackPointDirection, centerTrackPointPosition);
