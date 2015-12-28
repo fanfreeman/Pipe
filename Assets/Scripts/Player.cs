@@ -78,8 +78,6 @@ public class Player : MonoBehaviour {
                 ref progress
         );
         getUpVectorHolder = GetUpVector();
-
-        Debug.Log("progress:"+progress);
         if(progress >= 1)
             currentPipe = pipeSystem.SetupNextPipe();
 
@@ -113,19 +111,21 @@ public class Player : MonoBehaviour {
     private void OnDrawGizmos()
     {
         // draw the point on the center track closest to the avatar
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawSphere(centerTrackPointPosition, 0.3f);
-        Gizmos.DrawLine(avatar.transform.position, avatar.transform.position + centerTrackPointDirection * 6f);
-        Gizmos.DrawLine(avatar.transform.position, avatar.transform.position - GetUpVector() * 6f);
-        Gizmos.color = Color.blue;
-        Gizmos.DrawLine(centerTrackPointPosition, currentPipe.transform.TransformPoint(Vector3.zero));
-        Gizmos.DrawLine(centerTrackPointPosition, avatar.transform.position);
-        Gizmos.DrawLine(avatar.transform.position, currentPipe.transform.TransformPoint(Vector3.zero));
+        if (Application.isPlaying)
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawSphere(centerTrackPointPosition, 0.3f);
+            Gizmos.DrawLine(avatar.transform.position, avatar.transform.position + centerTrackPointDirection * 6f);
+            Gizmos.DrawLine(avatar.transform.position, avatar.transform.position - GetUpVector() * 6f);
+            Gizmos.color = Color.blue;
+            Gizmos.DrawLine(centerTrackPointPosition, currentPipe.transform.TransformPoint(Vector3.zero));
+            Gizmos.DrawLine(centerTrackPointPosition, avatar.transform.position);
+            Gizmos.DrawLine(avatar.transform.position, currentPipe.transform.TransformPoint(Vector3.zero));
 
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(avatar.transform.position, avatar.transform.position + forceL * 4f);
-        Gizmos.DrawLine(avatar.transform.position, avatar.transform.position - forceR * 4f);
-
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(avatar.transform.position, avatar.transform.position + forceL * 4f);
+            Gizmos.DrawLine(avatar.transform.position, avatar.transform.position - forceR * 4f);
+        }
     }
 
     public Vector3 GetUpVector()

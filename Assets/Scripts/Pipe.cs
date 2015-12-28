@@ -48,7 +48,7 @@ public class Pipe : MonoBehaviour {
         meshCollider = GetComponent<MeshCollider>();
     }
 
-    public void Generate(bool withItems = true)
+    public void Generate (bool withItems = true)
     {
         // create pipe mesh
         curveRadius = Random.Range(minCurveRadius, maxCurveRadius);
@@ -72,11 +72,12 @@ public class Pipe : MonoBehaviour {
         }
         
         // create new obstacles for this pipe
-        if (withItems)
+        if (true)
         {
             generators[Random.Range(0, generators.Length)].GenerateItems(this);
         }
 
+        //扇形的2个顶点
         float u = curveSegmentCount * ringDistance / curveRadius;
         p0.x = curveRadius * Mathf.Sin(0);
         p0.y = curveRadius * Mathf.Cos(0);
