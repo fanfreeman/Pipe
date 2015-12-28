@@ -27,10 +27,10 @@ public class CameraController : MonoBehaviour {
     {
         // find distance between camera and avatar
         float distanceToAvatar = Vector3.Distance(targetPosition, player.avatar.transform.position);
-        while (distanceToAvatar > 5f)
+        while (distanceToAvatar > 2.1f)
         {
             // move camera by setting a new value for progress along the spline
-            progress += 0.001f;
+            progress += Time.deltaTime * 0.1f;
             if (progress > 1f)
             {
                 currentPipe = player.currentPipe;
@@ -39,8 +39,9 @@ public class CameraController : MonoBehaviour {
             targetPosition = currentPipe.cameraSpline.GetPoint(progress);
             distanceToAvatar = Vector3.Distance(targetPosition, player.avatar.transform.position);
         }
-        
-        transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, 0.3f);
+
+        transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, Time.deltaTime * 10f);
+        //transform.position = targetPosition;
 
         // update camera rotation by look at avatar
         //transform.LookAt(player.avatar.transform, player.GetUpVector());
@@ -49,8 +50,10 @@ public class CameraController : MonoBehaviour {
         //transform.rotation = Quaternion.Lerp(transform.rotation, newRot, Time.deltaTime * 2f);
 
         // update camera rotation using center track point direction
-        Vector3 forwardVector = player.GetCenterTrackPointDirection();
-        var newRot = Quaternion.LookRotation(forwardVector);
-        transform.rotation = Quaternion.Lerp(transform.rotation, newRot, Time.deltaTime * 2f);
+        //Vector3 forwardVector = player.GetCenterTrackPointDirection();
+        Vector3 forwardVector = player.GetCenterTrackHookPosition() + player.GetCenterTrackPointDirection() * 2 - transform.position;
+        var newRot = Quaternion.LookRotation(forwardVector, player.GetUpVector());
+        transform.rotation = Quaternion.Lerp(transform.rotation, newRot, Time.deltaTime * 10f);
+        //transform.rotation = newRot;
     }
 }

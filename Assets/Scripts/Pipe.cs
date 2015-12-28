@@ -141,12 +141,18 @@ public class Pipe : MonoBehaviour {
         }
     }
 
-    public Vector3 GetCenterPointByProgress(float progress)
+    // given progress, get center track point in local coordinates
+    public Vector3 GetCenterPointByProgressLocal(float progress)
     {
-        float angle;
-        angle = progress*angleOfPiple;
+        float angle = progress * angleOfPiple;
         Vector3 centerPoint = Quaternion.AngleAxis(angle, Vector3.back) * p0;
         return centerPoint;
+    }
+
+    // given progress, get center track point in global coordinates
+    public Vector3 GetCenterPointByProgressGlobal(float progress)
+    {
+        return transform.TransformPoint(GetCenterPointByProgressLocal(progress));
     }
 
     //计算夹角的角度 0~360
