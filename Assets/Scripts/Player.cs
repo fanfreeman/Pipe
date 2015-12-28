@@ -117,7 +117,6 @@ public class Player : MonoBehaviour {
 
     private void OnDrawGizmos()
     {
-<<<<<<< HEAD
         // draw the point on the center track closest to the avatar
         if (Application.isPlaying)
         {
@@ -134,21 +133,6 @@ public class Player : MonoBehaviour {
             Gizmos.DrawLine(avatar.transform.position, avatar.transform.position + forceL * 4f);
             Gizmos.DrawLine(avatar.transform.position, avatar.transform.position - forceR * 4f);
         }
-=======
-        // draw the center track point
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawSphere(centerTrackPointPosition, 0.3f);
-
-        // draw the center track direction
-        Gizmos.DrawLine(centerTrackPointPosition, centerTrackPointPosition + centerTrackPointDirection * 5f);
-
-        //Gizmos.DrawLine(avatar.transform.position, avatar.transform.position + centerTrackPointDirection * 6f);
-        //Gizmos.DrawLine(avatar.transform.position, avatar.transform.position - GetUpVector() * 6f);
-
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(avatar.transform.position, avatar.transform.position + forceL * 4f);
-        Gizmos.DrawLine(avatar.transform.position, avatar.transform.position - forceR * 4f);
->>>>>>> 3a6c9143a58b18c87b824ff9bf7ec7bb1d41c214
     }
 
     public Vector3 GetUpVector()
