@@ -105,7 +105,6 @@ public class Player : MonoBehaviour {
         // update camera rotation
         //Vector3 cameraTarget = centerTrackPointPosition + centerTrackPointDirection * 5f;
         Vector3 cameraTarget = currentPipe.GetCenterPointByProgressGlobal(progress + 0.4f);
-        Debug.Log(progress);
         //Quaternion cameraRotation = Quaternion.LookRotation(cameraTarget - avatar.transform.position, GetUpVector());
         Quaternion cameraRotation = Quaternion.LookRotation(centerTrackPointDirection, GetUpVector());
         //Debug.Log(cameraRotation.eulerAngles.ToString());

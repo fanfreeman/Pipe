@@ -95,12 +95,7 @@ MonoBehaviour:
   minCurveSegmentCount: 10
   maxCurveSegmentCount: 10
   generators:
-  - {fileID: 11491432, guid: ccaff1dff8f7679438cf6fa0c5d939ec, type: 2}
-  - {fileID: 11491432, guid: ccaff1dff8f7679438cf6fa0c5d939ec, type: 2}
-  - {fileID: 11442216, guid: f1328a43fc74ff14ba72ddd1d459823d, type: 2}
-  - {fileID: 11442216, guid: f1328a43fc74ff14ba72ddd1d459823d, type: 2}
-  - {fileID: 11442216, guid: f1328a43fc74ff14ba72ddd1d459823d, type: 2}
-  - {fileID: 11472950, guid: b17f7478c7d469341b8dfaa568aa0f8a, type: 2}
+  - {fileID: 11447308, guid: 28bf86025d8f6564b89e7cd4511e7a0c, type: 2}
   cameraSpline: {fileID: 0}
 --- !u!1001 &100100000
 Prefab:
@@ -111,7 +106,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 0}
       propertyPath: generators.Array.size
-      value: 6
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: minCurveRadius
@@ -148,7 +143,7 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: generators.Array.data[0]
       value: 
-      objectReference: {fileID: 11491432, guid: ccaff1dff8f7679438cf6fa0c5d939ec,
+      objectReference: {fileID: 11447308, guid: 28bf86025d8f6564b89e7cd4511e7a0c,
         type: 2}
     - target: {fileID: 0}
       propertyPath: generators.Array.data[1]
