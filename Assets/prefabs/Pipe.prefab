@@ -41,7 +41,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_Materials:
-  - {fileID: 2100000, guid: 7a90e85148265b447a54ec8e38a4a8b0, type: 2}
+  - {fileID: 2100000, guid: 77fe425794c1142448c5b76f4b69722e, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 1
@@ -87,13 +87,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f956e81e98bfb464ea1aa2b8b3eb4019, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pipeRadius: 2
-  pipeSegmentCount: 55
+  pipeRadiusBegin: 2
+  pipeRadiusEnd: 1.5
+  pipeSegmentCount: 20
   ringDistance: 1
   minCurveRadius: 4
   maxCurveRadius: 40
-  minCurveSegmentCount: 10
-  maxCurveSegmentCount: 10
+  minCurveSegmentCount: 20
+  maxCurveSegmentCount: 20
   generators:
   - {fileID: 11447308, guid: 28bf86025d8f6564b89e7cd4511e7a0c, type: 2}
   cameraSpline: {fileID: 0}
@@ -118,11 +119,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: minCurveSegmentCount
-      value: 10
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: maxCurveSegmentCount
-      value: 10
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: pipeRadius
@@ -131,10 +132,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 7a90e85148265b447a54ec8e38a4a8b0, type: 2}
+      objectReference: {fileID: 2100000, guid: 77fe425794c1142448c5b76f4b69722e, type: 2}
     - target: {fileID: 0}
       propertyPath: pipeSegmentCount
-      value: 55
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: ringDistance
@@ -188,6 +189,14 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: pipeRadiusBegin
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: pipeRadiusEnd
+      value: 1.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

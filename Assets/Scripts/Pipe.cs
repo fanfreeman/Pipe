@@ -4,7 +4,8 @@ using System.Collections.Generic;
 
 public class Pipe : MonoBehaviour {
 
-    public float pipeRadius;
+    public float pipeRadiusBegin;
+    public float pipeRadiusEnd;
     public int pipeSegmentCount;
     public float ringDistance; // scaling of pipe rings; default is 1
 
@@ -92,9 +93,14 @@ public class Pipe : MonoBehaviour {
     // using geometrical formula for a torus, find point on the torus in world space
     // u is angle in radians along curve
     // v is angle in radians along pipe cross-section circle
-    private Vector3 GetPointOnTorus(float u, float v)
+    // uNum is the step number along pipe curve
+    private Vector3 GetPointOnTorus(float u, float v, int uNum)
     {
         Vector3 p;
+        int inverseStepsToBeginning = CurveSegmentCount - uNum;
+        int inverseStepsToEnd = uNum;
+        float pipeRadius = (inverseStepsToBeginning * pipeRadiusBegin + inverseStepsToEnd * pipeRadiusEnd) / (float)CurveSegmentCount;
+
         float r = (curveRadius + pipeRadius * Mathf.Cos(v));
         p.x = r * Mathf.Sin(u);
         p.y = r * Mathf.Cos(u);
@@ -285,29 +291,29 @@ public class Pipe : MonoBehaviour {
     {
         vertices = new Vector3[pipeSegmentCount * curveSegmentCount * 4];
 
-        float uStep = ringDistance / curveRadius;
+        float uStep = ringDistance / curveRadius; // one step along pipe curve
         curveAngle = uStep * curveSegmentCount * (360f / (2f * Mathf.PI));
         CreateFirstQuadRing(uStep);
-        int iDelta = pipeSegmentCount * 4;
+        int iDelta = pipeSegmentCount * 4; // number of vertices in a single ring of the pipe
         for (int u = 2, i = iDelta; u <= curveSegmentCount; u++, i += iDelta)
         {
-            CreateQuadRing(u * uStep, i);
+            CreateQuadRing(u * uStep, i, u);
         }
         mesh.vertices = vertices;
     }
 
-    private void CreateQuadRing(float u, int i)
+    private void CreateQuadRing(float u, int i, int uNum)
     {
-        float vStep = (2f * Mathf.PI) / pipeSegmentCount;
-        int ringOffset = pipeSegmentCount * 4;
+        float vStep = (2f * Mathf.PI) / pipeSegmentCount; // angle in radians of each ring segment
+        int ringOffset = pipeSegmentCount * 4; // number of vertices in a single ring of the pipe
 
-        Vector3 vertex = GetPointOnTorus(u, 0f);
+        Vector3 vertex = GetPointOnTorus(u, 0f, uNum);
         for (int v = 1; v <= pipeSegmentCount; v++, i += 4)
         {
             vertices[i] = vertices[i - ringOffset + 2];
             vertices[i + 1] = vertices[i - ringOffset + 3];
             vertices[i + 2] = vertex;
-            vertices[i + 3] = vertex = GetPointOnTorus(u, v * vStep);
+            vertices[i + 3] = vertex = GetPointOnTorus(u, v * vStep, uNum);
         }
     }
 
@@ -315,27 +321,59 @@ public class Pipe : MonoBehaviour {
     {
         float vStep = (2f * Mathf.PI) / pipeSegmentCount;
 
-        Vector3 vertexA = GetPointOnTorus(0f, 0f);
-        Vector3 vertexB = GetPointOnTorus(u, 0f);
+        Vector3 vertexA = GetPointOnTorus(0f, 0f, 0);
+        Vector3 vertexB = GetPointOnTorus(u, 0f, 1);
         for (int v = 1, i = 0; v <= pipeSegmentCount; v++, i += 4)
         {
             vertices[i] = vertexA;
-            vertices[i + 1] = vertexA = GetPointOnTorus(0f, v * vStep);
+            vertices[i + 1] = vertexA = GetPointOnTorus(0f, v * vStep, 0);
             vertices[i + 2] = vertexB;
-            vertices[i + 3] = vertexB = GetPointOnTorus(u, v * vStep);
+            vertices[i + 3] = vertexB = GetPointOnTorus(u, v * vStep, 1);
         }
     }
 
     private void SetUV()
     {
+        float cellSize = 1f / 20f;
         uv = new Vector2[vertices.Length];
-        for (int i = 0; i < vertices.Length; i += 4)
+
+        // map the very first ring of the pipe
+        Vector2 uvA = new Vector2(0f, 0f); // start at bottom left vertex
+        Vector3 uvB = new Vector2(0f, cellSize); // start at top left vertex
+        for (int v = 1, i = 0; v <= pipeSegmentCount; v++, i += 4)
         {
-            uv[i] = Vector2.zero;
-            uv[i + 1] = Vector2.right;
-            uv[i + 2] = Vector2.up;
-            uv[i + 3] = Vector2.one;
+            uv[i] = uvA; // 0, 0
+            uv[i + 1] = uvA = new Vector2(v * cellSize, 0f); // 1, 0
+            uv[i + 2] = uvB; // 0, 1
+            uv[i + 3] = uvB = new Vector2(v * cellSize, cellSize); // 1, 1
         }
+
+        // map the remaining rings
+        int ringOffset = pipeSegmentCount * 4; // number of vertices in a single ring of the pipe
+        for (int u = 2, i = ringOffset; u <= CurveSegmentCount; u++)
+        {
+            uvA = uv[i - ringOffset + 2];
+            uvB = new Vector2(uvA.x, uvA.y + cellSize);
+            for (int v = 1; v <= pipeSegmentCount; v++, i += 4)
+            {
+                uv[i] = uvA;
+                uv[i + 1] = uvA = new Vector2(v * cellSize, uvA.y);
+                uv[i + 2] = uvB;
+                uv[i + 3] = uvB = new Vector2(v * cellSize, uvB.y);
+            }
+        }
+
+        //for (int i = 0; i < vertices.Length; i += 4)
+        //{
+        //    //uv[i] = Vector2.zero;
+        //    //uv[i + 1] = Vector2.right;
+        //    //uv[i + 2] = Vector2.up;
+        //    //uv[i + 3] = Vector2.one;
+        //    uv[i] = Vector2.zero;
+        //    uv[i + 1] = new Vector2(cellSize, 0);
+        //    uv[i + 2] = new Vector2(0, cellSize);
+        //    uv[i + 3] = new Vector2(cellSize, cellSize);
+        //}
         mesh.uv = uv;
     }
 
