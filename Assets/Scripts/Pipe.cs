@@ -72,7 +72,7 @@ public class Pipe : MonoBehaviour {
         }
         
         // create new obstacles for this pipe
-        if (true)
+        if (withItems)
         {
             generators[Random.Range(0, generators.Length)].GenerateItems(this);
         }
