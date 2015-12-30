@@ -16,8 +16,10 @@ public class Avatar : MonoBehaviour {
 
     private void OnTriggerEnter(Collider collider)
     {
+        Debug.Log("你打我啊");
         if (deathCountdown < 0f)
         {
+            return;
             shape.enableEmission = false;
             trail.enableEmission = false;
             burst.Emit(burst.maxParticles);
