@@ -18,7 +18,7 @@ public class SpiralPlacer : PipeItemGenerator
                 itemPrefabs[Random.Range(0, itemPrefabs.Length)]);
             float pipeRotation =
                 (start + i * direction) * 360f / pipe.pipeSegmentCount;
-            item.Position(pipe, i * angleStep, pipeRotation);
+            item.Position(pipe, i * angleStep, pipeRotation, pipe.GetPipeRadiusBySegmentIndex(i));
         }
     }
 }

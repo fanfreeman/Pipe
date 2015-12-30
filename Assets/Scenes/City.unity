@@ -3286,7 +3286,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11476002, guid: 39b53518d7c7aba4d9f313d029e837d4, type: 2}
       propertyPath: pipeCount
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 11476002, guid: 39b53518d7c7aba4d9f313d029e837d4, type: 2}
       propertyPath: emptyPipeCount
@@ -3308,7 +3308,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pipePrefab: {fileID: 11442014, guid: 84cd30228e4c6314f86b6400665751b0, type: 2}
-  pipeCount: 10
+  pipeCount: 5
   emptyPipeCount: 2
 --- !u!1 &1269187966
 GameObject:

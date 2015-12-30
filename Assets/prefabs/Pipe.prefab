@@ -87,8 +87,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f956e81e98bfb464ea1aa2b8b3eb4019, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pipeRadiusBegin: 2
-  pipeRadiusEnd: 1.5
+  maxPipeRadius: 8
   pipeSegmentCount: 20
   ringDistance: 1
   minCurveRadius: 4
@@ -98,6 +97,8 @@ MonoBehaviour:
   generators:
   - {fileID: 11447308, guid: 28bf86025d8f6564b89e7cd4511e7a0c, type: 2}
   cameraSpline: {fileID: 0}
+  pipeRadiusBegin: 8
+  pipeRadiusEnd: 2
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -192,11 +193,15 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: pipeRadiusBegin
-      value: 2
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: pipeRadiusEnd
-      value: 1.5
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: maxPipeRadius
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

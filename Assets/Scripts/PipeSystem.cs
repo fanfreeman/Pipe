@@ -30,7 +30,10 @@ public class PipeSystem : MonoBehaviour {
         for (int i = 0; i < pipes.Length; i++)
         {
             Pipe pipe = pipes[i];
-            pipe.Generate(i > emptyPipeCount);
+
+            float prevPipeEndRadius = 2f;
+            if (i > 0) prevPipeEndRadius = pipes[i - 1].GetPipeEndRadius();
+            pipe.Generate(prevPipeEndRadius, i > emptyPipeCount);
             if (i > 0)
             {
                 pipe.AlignWith(pipes[i - 1]);
@@ -54,7 +57,7 @@ public class PipeSystem : MonoBehaviour {
     {
         ShiftPipes();
         //AlignNextPipeWithOrigin();
-        pipes[pipes.Length - 1].Generate();
+        pipes[pipes.Length - 1].Generate(pipes[pipes.Length - 2].GetPipeEndRadius());
         pipes[pipes.Length - 1].AlignWith(pipes[pipes.Length - 2]);
         //transform.localPosition = new Vector3(0f, -pipes[0].CurveRadius);
         return pipes[1];

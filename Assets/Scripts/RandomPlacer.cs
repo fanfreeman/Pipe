@@ -15,7 +15,7 @@ public class RandomPlacer : PipeItemGenerator {
                 float pipeRotation =
                     (Random.Range(0, pipe.pipeSegmentCount) + 0.5f) *
                     360f / pipe.pipeSegmentCount;
-                item.Position(pipe, i * angleStep, pipeRotation);
+                item.Position(pipe, i * angleStep, pipeRotation, pipe.GetPipeRadiusBySegmentIndex(i));
         }
     }
 }

@@ -84,10 +84,12 @@ public class Player : MonoBehaviour {
         // apply force to move forward
         avatar.GetComponent<Rigidbody>().AddForce(centerTrackPointDirection * 15f, ForceMode.Acceleration);
 
+        float currentPipeRadius = currentPipe.GetPipeRadiusByProgress(progress);
+
         // apply force to make avatar stick to wall
         Vector3 upVector = GetUpVector();
-        float magnitudeModifier = (3f - upVector.magnitude) * 10f;
-        avatar.GetComponent<Rigidbody>().AddForce(-upVector * magnitudeModifier, ForceMode.Acceleration);
+        //float magnitudeModifier = (currentPipeRadius - upVector.magnitude + 1f) * 10f;
+        avatar.GetComponent<Rigidbody>().AddForce(-upVector * 20f / currentPipeRadius, ForceMode.Acceleration);
 
         //Vector3 lookAt = avatar.transform.position;// Vector3.SmoothDamp(coolVehicle.transform.position, avatar.transform.position, ref coolVehicleLookAtVelocity, 0.03f);
 

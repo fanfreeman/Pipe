@@ -4,8 +4,7 @@ using System.Collections.Generic;
 
 public class Pipe : MonoBehaviour {
 
-    public float pipeRadiusBegin;
-    public float pipeRadiusEnd;
+    public float maxPipeRadius;
     public int pipeSegmentCount;
     public float ringDistance; // scaling of pipe rings; default is 1
 
@@ -20,7 +19,7 @@ public class Pipe : MonoBehaviour {
     private Mesh mesh;
     private Vector3[] vertices;
     private int[] triangles;
-    private float curveAngle; // 
+    private float curveAngle; // the entire curve span of the pipe in degrees
     private float relativeRotation; // random rotation around the x-axis
     private Vector2[] uv;
     
@@ -34,7 +33,9 @@ public class Pipe : MonoBehaviour {
     private Vector3 positionOfAvatar = new Vector3(111,222,333);
 
     private float angleOfPiple;
-    // private float
+
+    public float pipeRadiusBegin; // 管道开头大小
+    public float pipeRadiusEnd; // 管道结尾大小
 
     private void Awake()
     {
@@ -49,8 +50,18 @@ public class Pipe : MonoBehaviour {
         meshCollider = GetComponent<MeshCollider>();
     }
 
-    public void Generate (bool withItems = true)
+    public float GetPipeEndRadius()
     {
+        return pipeRadiusEnd;
+    }
+
+    // prevPipeEndRadius is the radius of the end of the previous pipe
+    public void Generate (float prevPipeEndRadius, bool withItems = true)
+    {
+        // determine pipe beginning and end radii
+        pipeRadiusBegin = prevPipeEndRadius;
+        pipeRadiusEnd = Random.Range(2f, maxPipeRadius);
+
         // create pipe mesh
         curveRadius = Random.Range(minCurveRadius, maxCurveRadius);
         curveSegmentCount = Random.Range(minCurveSegmentCount, maxCurveSegmentCount + 1);
@@ -71,12 +82,9 @@ public class Pipe : MonoBehaviour {
         {
             Destroy(transform.GetChild(i).gameObject);
         }
-        
+
         // create new obstacles for this pipe
-        if (true)
-        {
-            generators[Random.Range(0, generators.Length)].GenerateItems(this);
-        }
+        generators[Random.Range(0, generators.Length)].GenerateItems(this);
 
         //扇形的2个顶点
         float u = curveSegmentCount * ringDistance / curveRadius;
@@ -145,6 +153,16 @@ public class Pipe : MonoBehaviour {
         {
             progress = (angle-360)/angleOfPiple;
         }
+    }
+
+    public float GetPipeRadiusByProgress(float progress)
+    {
+        return pipeRadiusBegin * (1 - progress) + pipeRadiusEnd * progress;
+    }
+
+    public float GetPipeRadiusBySegmentIndex(int index)
+    {
+        return (pipeRadiusBegin * (curveSegmentCount - index) + pipeRadiusEnd * index) / curveSegmentCount;
     }
 
     // given progress, get center track point in local coordinates
