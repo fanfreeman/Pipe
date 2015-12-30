@@ -70,7 +70,6 @@ public class Pipe : MonoBehaviour {
         SetUV();
         SetTriangles();
         mesh.RecalculateNormals();
-
         // set mesh collider to use newly created mesh
         meshCollider.sharedMesh = mesh;
 
@@ -158,6 +157,41 @@ public class Pipe : MonoBehaviour {
     public float GetPipeRadiusByProgress(float progress)
     {
         return pipeRadiusBegin * (1 - progress) + pipeRadiusEnd * progress;
+    }
+
+    private void CreateSphereRayCastTest()
+    {
+        //球形raycast的所在progress
+        float[] points = {0.4f,0.5f,0.6f};
+        foreach (float point in points)
+        {
+            int layerMask = 1 << 8;//pipe所在的layer
+            Collider[] hitColliders =
+            Physics.OverlapSphere  (
+                    GetCenterPointByProgressGlobal(point),
+                    GetPipeRadiusByProgress(point) - 0.2f,
+                    layerMask
+            );
+            if(hitColliders.Length > 0)
+            {
+                //计算轨道新的rotation
+                AlignWithNextTry();
+            }
+        }
+    }
+
+    public void AlignWithNextTry()
+    {
+        // random relative rotation
+        relativeRotation = (randomSegment++)%curveSegmentCount * 360f / pipeSegmentCount;
+        transform.localPosition = Vector3.zero;
+        transform.localRotation = Quaternion.Euler(0f, 0f, -alignedPipe.curveAngle);
+        transform.Translate(0f, alignedPipe.curveRadius, 0f);
+        transform.Rotate(relativeRotation, 0f, 0f);
+        transform.Translate(0f, -curveRadius, 0f);
+        transform.SetParent(alignedPipe.transform.parent);
+        transform.localScale = Vector3.one; // prevent transform degradation when changing parents
+        CreateSphereRayCastTest();
     }
 
     public float GetPipeRadiusBySegmentIndex(int index)
@@ -276,35 +310,6 @@ public class Pipe : MonoBehaviour {
         return point;
     }
 
-    //private void OnDrawGizmos()
-    //{
-    //    Gizmos.DrawSphere(new Vector3(0f, 0f, 0f), 0.1f);
-    //    float uStep = ringDistance / curveRadius;
-    //    //    float vStep = (2f * Mathf.PI) / pipeSegmentCount;
-
-    //    //    for (int u = 0; u < curveSegmentCount; u++)
-    //    //    {
-    //    //        for (int v = 0; v < pipeSegmentCount; v++)
-    //    //        {
-    //    //            Vector3 point = GetPointOnTorus(u * uStep, v * vStep);
-    //    //            Gizmos.color = new Color(
-    //    //                1f,
-    //    //                (float)v / pipeSegmentCount,
-    //    //                (float)u / curveSegmentCount);
-    //    //            Gizmos.DrawSphere(point, 0.1f);
-    //    //        }
-    //    //    }
-    //    for (int u = 0; u < curveSegmentCount; u++)
-    //    {
-    //        Vector3 point = GetPointAtCenterOfPipe(u * uStep);
-    //        Gizmos.color = new Color(
-    //                    1f,
-    //                    1f,
-    //                    (float)u / curveSegmentCount);
-    //        Gizmos.DrawSphere(point, 0.1f);
-    //    }
-    //}
-
     private void SetVertices()
     {
         vertices = new Vector3[pipeSegmentCount * curveSegmentCount * 4];
@@ -408,11 +413,14 @@ public class Pipe : MonoBehaviour {
         mesh.triangles = triangles;
     }
 
+    private int randomSegment;
+    private Pipe alignedPipe;
     public void AlignWith(Pipe pipe)
     {
         // random relative rotation
-        relativeRotation = Random.Range(0, curveSegmentCount) * 360f / pipeSegmentCount;
-
+        randomSegment = Random.Range(0, curveSegmentCount);
+        relativeRotation = randomSegment * 360f / pipeSegmentCount;
+        alignedPipe = pipe;
         transform.SetParent(pipe.transform, false);
         transform.localPosition = Vector3.zero;
         transform.localRotation = Quaternion.Euler(0f, 0f, -pipe.curveAngle);
@@ -421,6 +429,7 @@ public class Pipe : MonoBehaviour {
         transform.Translate(0f, -curveRadius, 0f);
         transform.SetParent(pipe.transform.parent);
         transform.localScale = Vector3.one; // prevent transform degradation when changing parents
+        CreateSphereRayCastTest();
     }
 
     // get a list of the pipe's center points for the camera track
