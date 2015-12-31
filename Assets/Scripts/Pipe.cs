@@ -83,7 +83,7 @@ public class Pipe : MonoBehaviour {
         }
 
         // create new obstacles for this pipe
-        generators[Random.Range(0, generators.Length)].GenerateItems(this);
+//        generators[Random.Range(0, generators.Length)].GenerateItems(this);
 
         //扇形的2个顶点
         float u = curveSegmentCount * ringDistance / curveRadius;
@@ -159,6 +159,7 @@ public class Pipe : MonoBehaviour {
         return pipeRadiusBegin * (1 - progress) + pipeRadiusEnd * progress;
     }
 
+    private float rayOffset = 0.5f;
     private void CreateSphereRayCastTest()
     {
         //球形raycast的所在progress
@@ -169,14 +170,20 @@ public class Pipe : MonoBehaviour {
             Collider[] hitColliders =
             Physics.OverlapSphere  (
                     GetCenterPointByProgressGlobal(point),
-                    GetPipeRadiusByProgress(point) - 0.2f,
+                    GetPipeRadiusByProgress(point) - rayOffset,
                     layerMask
             );
-            if(hitColliders.Length > 0)
-            {
-                //计算轨道新的rotation
-                AlignWithNextTry();
-            }
+//            if(hitColliders.Length > 0)
+//            {
+//                //计算轨道新的rotation
+//                Debug.Log("哦呵呵呵贪吃蛇");
+//                AlignWithNextTry();
+//            }
+//            else
+//            {
+                transform.SetParent(alignedPipe.transform.parent);
+                transform.localScale = Vector3.one; // prevent transform degradation when changing parents
+    //        }
         }
     }
 
@@ -184,14 +191,16 @@ public class Pipe : MonoBehaviour {
     {
         // random relative rotation
         relativeRotation = (randomSegment++)%curveSegmentCount * 360f / pipeSegmentCount;
+        transform.SetParent(alignedPipe.transform, false);
         transform.localPosition = Vector3.zero;
         transform.localRotation = Quaternion.Euler(0f, 0f, -alignedPipe.curveAngle);
         transform.Translate(0f, alignedPipe.curveRadius, 0f);
         transform.Rotate(relativeRotation, 0f, 0f);
         transform.Translate(0f, -curveRadius, 0f);
+        CreateSphereRayCastTest();
         transform.SetParent(alignedPipe.transform.parent);
         transform.localScale = Vector3.one; // prevent transform degradation when changing parents
-        CreateSphereRayCastTest();
+
     }
 
     public float GetPipeRadiusBySegmentIndex(int index)
@@ -230,6 +239,19 @@ public class Pipe : MonoBehaviour {
 
     private void OnDrawGizmos()
     {
+        Gizmos.color = Color.black;
+        //test ray
+        float[] points = {0.4f,0.5f,0.6f};
+        foreach (float point in points)
+        {
+            Gizmos.DrawWireSphere(
+                    GetCenterPointByProgressGlobal(point),
+                    GetPipeRadiusByProgress(point) - rayOffset
+            );
+        }
+
+
+
         //测试progress
 //        Gizmos.color = Color.magenta;
 //        Vector3 drawObjectRaw = GetCenterPointByProgress(0.5f);
@@ -415,10 +437,11 @@ public class Pipe : MonoBehaviour {
 
     private int randomSegment;
     private Pipe alignedPipe;
+    private int segmentRandomOffset = 6;
     public void AlignWith(Pipe pipe)
     {
         // random relative rotation
-        randomSegment = Random.Range(0, curveSegmentCount);
+        randomSegment = Random.Range(segmentRandomOffset, curveSegmentCount-segmentRandomOffset);
         relativeRotation = randomSegment * 360f / pipeSegmentCount;
         alignedPipe = pipe;
         transform.SetParent(pipe.transform, false);
@@ -427,8 +450,6 @@ public class Pipe : MonoBehaviour {
         transform.Translate(0f, pipe.curveRadius, 0f);
         transform.Rotate(relativeRotation, 0f, 0f);
         transform.Translate(0f, -curveRadius, 0f);
-        transform.SetParent(pipe.transform.parent);
-        transform.localScale = Vector3.one; // prevent transform degradation when changing parents
         CreateSphereRayCastTest();
     }
 

@@ -90,12 +90,11 @@ MonoBehaviour:
   maxPipeRadius: 8
   pipeSegmentCount: 20
   ringDistance: 1
-  minCurveRadius: 4
-  maxCurveRadius: 40
+  minCurveRadius: 7
+  maxCurveRadius: 20
   minCurveSegmentCount: 20
   maxCurveSegmentCount: 20
-  generators:
-  - {fileID: 11447308, guid: 28bf86025d8f6564b89e7cd4511e7a0c, type: 2}
+  generators: []
   cameraSpline: {fileID: 0}
   pipeRadiusBegin: 8
   pipeRadiusEnd: 2
@@ -108,15 +107,15 @@ Prefab:
     m_Modifications:
     - target: {fileID: 0}
       propertyPath: generators.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: minCurveRadius
-      value: 4
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: maxCurveRadius
-      value: 40
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: minCurveSegmentCount
@@ -145,8 +144,7 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: generators.Array.data[0]
       value: 
-      objectReference: {fileID: 11447308, guid: 28bf86025d8f6564b89e7cd4511e7a0c,
-        type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: generators.Array.data[1]
       value: 
