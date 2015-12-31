@@ -82,7 +82,7 @@ public class Player : MonoBehaviour {
         if (progress >= 1) currentPipe = pipeSystem.SetupNextPipe();
 
         // apply force to move forward
-        avatar.GetComponent<Rigidbody>().AddForce(centerTrackPointDirection * 15f, ForceMode.Acceleration);
+        avatar.GetComponent<Rigidbody>().AddForce(centerTrackPointDirection * 15f, ForceMode.Force);
 
         float currentPipeRadius = currentPipe.GetPipeRadiusByProgress(progress);
 
@@ -90,6 +90,18 @@ public class Player : MonoBehaviour {
         Vector3 upVector = GetUpVector();
         //float magnitudeModifier = (currentPipeRadius - upVector.magnitude + 1f) * 10f;
         avatar.GetComponent<Rigidbody>().AddForce(-upVector * 20f / currentPipeRadius, ForceMode.Acceleration);
+
+        // hover
+        Ray ray = new Ray(avatar.transform.position, -avatar.transform.up);
+        RaycastHit hit;
+        float hoverHeight = 1.0f;
+        float hoverForce = 20f;
+        if (Physics.Raycast(ray, out hit, hoverHeight))
+        {
+            float proportionalHeight = (hoverHeight - hit.distance) / hoverHeight;
+            Vector3 appliedHoverForce = upVector.normalized * proportionalHeight * hoverForce;
+            avatar.GetComponent<Rigidbody>().AddForce(appliedHoverForce, ForceMode.Acceleration);
+        }
 
         //Vector3 lookAt = avatar.transform.position;// Vector3.SmoothDamp(coolVehicle.transform.position, avatar.transform.position, ref coolVehicleLookAtVelocity, 0.03f);
 
@@ -106,13 +118,14 @@ public class Player : MonoBehaviour {
 
         // update camera rotation
         //Vector3 cameraTarget = centerTrackPointPosition + centerTrackPointDirection * 5f;
-        Vector3 cameraTarget = currentPipe.GetCenterPointByProgressGlobal(progress + 0.4f);
-        //Quaternion cameraRotation = Quaternion.LookRotation(cameraTarget - avatar.transform.position, GetUpVector());
-        Quaternion cameraRotation = Quaternion.LookRotation(centerTrackPointDirection, GetUpVector());
+        //Vector3 cameraTarget = currentPipe.GetCenterPointByProgressGlobal(progress + 0.4f);
+        Vector3 cameraDirection = centerTrackPointDirection;
+        Quaternion cameraRotation = Quaternion.LookRotation(cameraDirection, GetUpVector());
+        //Quaternion cameraRotation = Quaternion.LookRotation(centerTrackPointDirection, GetUpVector());
         //Debug.Log(cameraRotation.eulerAngles.ToString());
         //coolVehicle.transform.rotation = cameraRotation;
-        //coolVehicle.transform.rotation = Quaternion.RotateTowards(coolVehicle.transform.rotation, cameraRotation, Time.deltaTime * 100f);
-        iTween.RotateUpdate(coolVehicle, iTween.Hash("rotation", cameraRotation.eulerAngles, "time", 0.1f));
+        coolVehicle.transform.rotation = Quaternion.RotateTowards(coolVehicle.transform.rotation, cameraRotation, Time.deltaTime * 200f);
+        //iTween.RotateUpdate(coolVehicle, iTween.Hash("rotation", cameraRotation.eulerAngles, "time", 1f));
 
         // update avatar turning according to user input
         UpdateAvatarRotation(centerTrackPointDirection, centerTrackPointPosition);
