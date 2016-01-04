@@ -60,7 +60,7 @@ public class Pipe : MonoBehaviour {
     {
         // determine pipe beginning and end radii
         pipeRadiusBegin = prevPipeEndRadius;
-        pipeRadiusEnd = Random.Range(2f, maxPipeRadius);
+        pipeRadiusEnd = Random.Range(maxPipeRadius, maxPipeRadius);
 
         // create pipe mesh
         curveRadius = Random.Range(minCurveRadius, maxCurveRadius);

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityStandardAssets.CrossPlatformInput;
 
 public class Player : MonoBehaviour {
 
@@ -37,6 +38,8 @@ public class Player : MonoBehaviour {
     private float progress = 0;
 
     private float progressDelta;
+
+    private Quaternion accumulatedYRot = Quaternion.identity;
 
     public void StartGame(int accelerationMode)
     {
@@ -81,27 +84,7 @@ public class Player : MonoBehaviour {
 
         if (progress >= 1) currentPipe = pipeSystem.SetupNextPipe();
 
-        // apply force to move forward
-        avatar.GetComponent<Rigidbody>().AddForce(centerTrackPointDirection * 15f, ForceMode.Force);
-
-        float currentPipeRadius = currentPipe.GetPipeRadiusByProgress(progress);
-
-        // apply force to make avatar stick to wall
-        Vector3 upVector = GetUpVector();
-        //float magnitudeModifier = (currentPipeRadius - upVector.magnitude + 1f) * 10f;
-        avatar.GetComponent<Rigidbody>().AddForce(-upVector * 20f / currentPipeRadius, ForceMode.Acceleration);
-
-        // hover
-        Ray ray = new Ray(avatar.transform.position, -avatar.transform.up);
-        RaycastHit hit;
-        float hoverHeight = 1.0f;
-        float hoverForce = 20f;
-        if (Physics.Raycast(ray, out hit, hoverHeight))
-        {
-            float proportionalHeight = (hoverHeight - hit.distance) / hoverHeight;
-            Vector3 appliedHoverForce = upVector.normalized * proportionalHeight * hoverForce;
-            avatar.GetComponent<Rigidbody>().AddForce(appliedHoverForce, ForceMode.Acceleration);
-        }
+        
 
         //Vector3 lookAt = avatar.transform.position;// Vector3.SmoothDamp(coolVehicle.transform.position, avatar.transform.position, ref coolVehicleLookAtVelocity, 0.03f);
 
@@ -117,15 +100,47 @@ public class Player : MonoBehaviour {
         coolVehicle.transform.position = avatar.transform.position;
 
         // update camera rotation
+        float yRot = CrossPlatformInputManager.GetAxis("Mouse X") * 5f;
         //Vector3 cameraTarget = centerTrackPointPosition + centerTrackPointDirection * 5f;
         //Vector3 cameraTarget = currentPipe.GetCenterPointByProgressGlobal(progress + 0.4f);
         Vector3 cameraDirection = centerTrackPointDirection;
         Quaternion cameraRotation = Quaternion.LookRotation(cameraDirection, GetUpVector());
+        accumulatedYRot *= Quaternion.Euler(0f, yRot, 0f);
+        cameraRotation *= accumulatedYRot;
         //Quaternion cameraRotation = Quaternion.LookRotation(centerTrackPointDirection, GetUpVector());
         //Debug.Log(cameraRotation.eulerAngles.ToString());
         //coolVehicle.transform.rotation = cameraRotation;
         coolVehicle.transform.rotation = Quaternion.RotateTowards(coolVehicle.transform.rotation, cameraRotation, Time.deltaTime * 200f);
         //iTween.RotateUpdate(coolVehicle, iTween.Hash("rotation", cameraRotation.eulerAngles, "time", 1f));
+
+
+
+
+
+
+        // apply force to move forward
+        //avatar.GetComponent<Rigidbody>().AddForce(centerTrackPointDirection.normalized * 15f, ForceMode.Force);
+        avatar.GetComponent<Rigidbody>().AddForce(coolVehicle.transform.forward.normalized * 15f, ForceMode.Force);
+
+        float currentPipeRadius = currentPipe.GetPipeRadiusByProgress(progress);
+
+        // apply force to make avatar stick to wall
+        Vector3 upVector = GetUpVector();
+        //float magnitudeModifier = (currentPipeRadius - upVector.magnitude + 1f) * 10f;
+        avatar.GetComponent<Rigidbody>().AddForce(-upVector * 20f / currentPipeRadius, ForceMode.Acceleration);
+        //Debug.Log(avatar.GetComponent<Rigidbody>().velocity.magnitude);
+
+        // hover
+        Ray ray = new Ray(avatar.transform.position, -avatar.transform.up);
+        RaycastHit hit;
+        float hoverHeight = 1.0f;
+        float hoverForce = 20f;
+        if (Physics.Raycast(ray, out hit, hoverHeight))
+        {
+            float proportionalHeight = (hoverHeight - hit.distance) / hoverHeight;
+            Vector3 appliedHoverForce = upVector.normalized * proportionalHeight * hoverForce;
+            avatar.GetComponent<Rigidbody>().AddForce(appliedHoverForce, ForceMode.Acceleration);
+        }
 
         // update avatar turning according to user input
         UpdateAvatarRotation(centerTrackPointDirection, centerTrackPointPosition);
@@ -136,21 +151,28 @@ public class Player : MonoBehaviour {
 
     private void OnDrawGizmos()
     {
-        // draw the point on the center track closest to the avatar
         if (Application.isPlaying)
         {
             Gizmos.color = Color.cyan;
+            // draw center track point
             Gizmos.DrawSphere(centerTrackPointPosition, 0.3f);
-            Gizmos.DrawLine(avatar.transform.position, avatar.transform.position + centerTrackPointDirection * 6f);
-            Gizmos.DrawLine(avatar.transform.position, avatar.transform.position - GetUpVector() * 6f);
-            Gizmos.color = Color.blue;
-            Gizmos.DrawLine(centerTrackPointPosition, currentPipe.transform.TransformPoint(Vector3.zero));
-            Gizmos.DrawLine(centerTrackPointPosition, avatar.transform.position);
-            Gizmos.DrawLine(avatar.transform.position, currentPipe.transform.TransformPoint(Vector3.zero));
 
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(avatar.transform.position, avatar.transform.position + forceL * 4f);
-            Gizmos.DrawLine(avatar.transform.position, avatar.transform.position - forceR * 4f);
+            // draw center track point direction
+            Gizmos.DrawLine(avatar.transform.position, avatar.transform.position + centerTrackPointDirection * 6f);
+
+            // draw up vector
+            //Gizmos.DrawLine(avatar.transform.position, avatar.transform.position - GetUpVector() * 6f);
+
+            // draw avatar plane
+            //Gizmos.color = Color.blue;
+            //Gizmos.DrawLine(centerTrackPointPosition, currentPipe.transform.TransformPoint(Vector3.zero));
+            //Gizmos.DrawLine(centerTrackPointPosition, avatar.transform.position);
+            //Gizmos.DrawLine(avatar.transform.position, currentPipe.transform.TransformPoint(Vector3.zero));
+
+            // draw spin force vectors
+            //Gizmos.color = Color.red;
+            //Gizmos.DrawLine(avatar.transform.position, avatar.transform.position + forceL * 4f);
+            //Gizmos.DrawLine(avatar.transform.position, avatar.transform.position - forceR * 4f);
         }
     }
 
