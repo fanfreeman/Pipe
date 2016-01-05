@@ -12,6 +12,8 @@ public class PipeSystem : MonoBehaviour {
 
     private Pipe[] pipes;
 
+    private const int StartingPipeIndex = 1;
+
     private void Awake()
     {
         // instantiate pipes
@@ -37,13 +39,19 @@ public class PipeSystem : MonoBehaviour {
             if (i > 0)
             {
                 pipe.AlignWith(pipes[i - 1]);
+                pipes[i - 1].nextPipe = pipes[i]; // set next pipe
             }
         }
         AlignNextPipeWithOrigin();
 
         // move the opening of the first pipe to world origin
-        transform.localPosition = new Vector3(0f, -pipes[1].CurveRadius);
-        return pipes[1];
+        transform.localPosition = new Vector3(0f, -pipes[StartingPipeIndex].CurveRadius);
+        return pipes[StartingPipeIndex];
+    }
+
+    public Pipe GetStartingPipe()
+    {
+        return pipes[StartingPipeIndex];
     }
 
     // return the very first pipe in the system
@@ -60,7 +68,8 @@ public class PipeSystem : MonoBehaviour {
         pipes[pipes.Length - 1].Generate(pipes[pipes.Length - 2].GetPipeEndRadius());
         pipes[pipes.Length - 1].AlignWith(pipes[pipes.Length - 2]);
         //transform.localPosition = new Vector3(0f, -pipes[0].CurveRadius);
-        return pipes[1];
+        pipes[pipes.Length - 2].nextPipe = pipes[pipes.Length - 1]; // set next pipe
+        return pipes[StartingPipeIndex];
     }
 
     // move pipes[0] to the end of the array
@@ -74,14 +83,14 @@ public class PipeSystem : MonoBehaviour {
         pipes[pipes.Length - 1] = temp;
     }
 
-    // make all other pipes children of pipes[1]
-    // and put pipes[1] at world origin
+    // make all other pipes children of pipes[StartingPipeIndex]
+    // and put pipes[StartingPipeIndex] at world origin
     private void AlignNextPipeWithOrigin()
     {
-        Transform transformToAlign = pipes[1].transform;
+        Transform transformToAlign = pipes[StartingPipeIndex].transform;
         for (int i = 0; i < pipes.Length; i++)
         {
-            if (i != 1) pipes[i].transform.SetParent(transformToAlign);
+            if (i != StartingPipeIndex) pipes[i].transform.SetParent(transformToAlign);
         }
 
         transformToAlign.localPosition = Vector3.zero;
@@ -89,7 +98,7 @@ public class PipeSystem : MonoBehaviour {
 
         for (int i = 0; i < pipes.Length; i++)
         {
-            if (i != 1) pipes[i].transform.SetParent(transform);
+            if (i != StartingPipeIndex) pipes[i].transform.SetParent(transform);
         }
     }
 }

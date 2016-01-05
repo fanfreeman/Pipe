@@ -4,56 +4,61 @@ using System.Collections;
 public class CameraController : MonoBehaviour {
 
     public PipeSystem pipeSystem;
-    public Player player;
 
+    private Player player;
+
+    private Vector3 centerTrackPointPosition = Vector3.zero;
+    private Vector3 centerTrackPointDirection = Vector3.zero;
     private float progress = 0;
-
-    private Vector3 targetPosition;
-
-    private Vector3 velocity = Vector3.zero;
 
     private Pipe currentPipe;
 
+    public GameObject vehicleAndCameraObject;
+
     void Start()
     {
-        // start camera near end of very first pipe
-        currentPipe = player.prevPipe;
-        progress = 0.9f;
-        targetPosition = currentPipe.cameraSpline.GetPoint(progress);
-        transform.position = targetPosition;
+        player = GetComponent<Player>();
+        currentPipe = pipeSystem.GetStartingPipe();
     }
 
     private void Update()
     {
-        // find distance between camera and avatar
-        float distanceToAvatar = Vector3.Distance(targetPosition, player.avatar.transform.position);
-        while (distanceToAvatar > 2.1f)
+        Vector3 avatarPosition = player.GetAvatarPosition();
+        Vector3 forwardPosition = avatarPosition + player.GetCenterTrackPointDirection() * 5f; // a point in front of the player
+        currentPipe.GetPlaneOfCurve(
+                forwardPosition,
+                ref centerTrackPointDirection,
+                ref centerTrackPointPosition,
+                ref progress
+        );
+
+        if (progress >= 1) currentPipe = pipeSystem.SetupNextPipe();
+
+        // update camera position
+        vehicleAndCameraObject.transform.position = avatarPosition;
+
+        // update camera rotation
+        //Vector3 cameraTarget = centerTrackPointPosition + centerTrackPointDirection * 5f;
+        //Vector3 cameraTarget = currentPipe.GetCenterPointByProgressGlobal(progress + 0.4f);
+        Vector3 cameraDirection = centerTrackPointDirection;
+        Quaternion cameraRotation = Quaternion.LookRotation(cameraDirection, player.GetUpVector());
+        //Quaternion cameraRotation = Quaternion.LookRotation(centerTrackPointDirection, GetUpVector());
+        //Debug.Log(cameraRotation.eulerAngles.ToString());
+        //coolVehicle.transform.rotation = cameraRotation;
+        vehicleAndCameraObject.transform.rotation = Quaternion.RotateTowards(vehicleAndCameraObject.transform.rotation, cameraRotation, Time.deltaTime * 300f);
+        //iTween.RotateUpdate(coolVehicle, iTween.Hash("rotation", cameraRotation.eulerAngles, "time", 1f));
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (Application.isPlaying)
         {
-            // move camera by setting a new value for progress along the spline
-            progress += Time.deltaTime * 0.1f;
-            if (progress > 1f)
-            {
-                currentPipe = player.currentPipe;
-                progress = 0;
-            }
-            targetPosition = currentPipe.cameraSpline.GetPoint(progress);
-            distanceToAvatar = Vector3.Distance(targetPosition, player.avatar.transform.position);
+            Gizmos.color = Color.red;
+            // draw center track point
+            Gizmos.DrawSphere(centerTrackPointPosition, 0.3f);
+
+            // draw center track point direction
+            Gizmos.DrawLine(centerTrackPointPosition, centerTrackPointPosition + centerTrackPointDirection * 6f);
         }
-
-        transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, Time.deltaTime * 10f);
-        //transform.position = targetPosition;
-
-        // update camera rotation by look at avatar
-        //transform.LookAt(player.avatar.transform, player.GetUpVector());
-        //Vector3 forwardVector = pipeSystem.cameraSpline.GetPoint(progress + 0.03f) - transform.position;
-        //var newRot = Quaternion.LookRotation(forwardVector);
-        //transform.rotation = Quaternion.Lerp(transform.rotation, newRot, Time.deltaTime * 2f);
-
-        // update camera rotation using center track point direction
-        //Vector3 forwardVector = player.GetCenterTrackPointDirection();
-        Vector3 forwardVector = player.GetCenterTrackHookPosition() + player.GetCenterTrackPointDirection() * 2 - transform.position;
-        var newRot = Quaternion.LookRotation(forwardVector, player.GetUpVector());
-        transform.rotation = Quaternion.Lerp(transform.rotation, newRot, Time.deltaTime * 10f);
-        //transform.rotation = newRot;
     }
 }

@@ -5,8 +5,7 @@ using UnityStandardAssets.CrossPlatformInput;
 public class Player : MonoBehaviour {
 
     public PipeSystem pipeSystem;
-    public GameObject coolVehicle;
-
+    
     public float rotationVelocity;
     public MainMenu mainMenu;
 
@@ -41,6 +40,8 @@ public class Player : MonoBehaviour {
 
     private Quaternion accumulatedYRot = Quaternion.identity;
 
+    private Rigidbody avatarRigidbody;
+
     public void StartGame(int accelerationMode)
     {
         distanceTraveled = 0f;
@@ -59,6 +60,7 @@ public class Player : MonoBehaviour {
     {
         world = pipeSystem.transform.parent;
         rotater = transform.GetChild(0);
+        avatarRigidbody = avatar.GetComponent<Rigidbody>();
         //gameObject.SetActive(false);
     }
 
@@ -82,9 +84,10 @@ public class Player : MonoBehaviour {
                 ref progress
         );
 
-        if (progress >= 1) currentPipe = pipeSystem.SetupNextPipe();
+        //if (progress >= 1) currentPipe = pipeSystem.SetupNextPipe();
+        if (progress >= 1) currentPipe = currentPipe.nextPipe;
 
-        
+
 
         //Vector3 lookAt = avatar.transform.position;// Vector3.SmoothDamp(coolVehicle.transform.position, avatar.transform.position, ref coolVehicleLookAtVelocity, 0.03f);
 
@@ -96,38 +99,17 @@ public class Player : MonoBehaviour {
         //UpdateAvatarRotation();
         //hud.SetValues(distanceTraveled, velocity);
 
-        // update camera position
-        coolVehicle.transform.position = avatar.transform.position;
-
-        // update camera rotation
-        float yRot = CrossPlatformInputManager.GetAxis("Mouse X") * 5f;
-        //Vector3 cameraTarget = centerTrackPointPosition + centerTrackPointDirection * 5f;
-        //Vector3 cameraTarget = currentPipe.GetCenterPointByProgressGlobal(progress + 0.4f);
-        Vector3 cameraDirection = centerTrackPointDirection;
-        Quaternion cameraRotation = Quaternion.LookRotation(cameraDirection, GetUpVector());
-        accumulatedYRot *= Quaternion.Euler(0f, yRot, 0f);
-        cameraRotation *= accumulatedYRot;
-        //Quaternion cameraRotation = Quaternion.LookRotation(centerTrackPointDirection, GetUpVector());
-        //Debug.Log(cameraRotation.eulerAngles.ToString());
-        //coolVehicle.transform.rotation = cameraRotation;
-        coolVehicle.transform.rotation = Quaternion.RotateTowards(coolVehicle.transform.rotation, cameraRotation, Time.deltaTime * 200f);
-        //iTween.RotateUpdate(coolVehicle, iTween.Hash("rotation", cameraRotation.eulerAngles, "time", 1f));
-
-
-
-
-
-
         // apply force to move forward
-        //avatar.GetComponent<Rigidbody>().AddForce(centerTrackPointDirection.normalized * 15f, ForceMode.Force);
-        avatar.GetComponent<Rigidbody>().AddForce(coolVehicle.transform.forward.normalized * 15f, ForceMode.Force);
+        avatar.GetComponent<Rigidbody>().AddForce(centerTrackPointDirection.normalized * 10f, ForceMode.Force);
+        //avatar.GetComponent<Rigidbody>().AddForce(coolVehicle.transform.forward.normalized * 15f, ForceMode.Force);
 
         float currentPipeRadius = currentPipe.GetPipeRadiusByProgress(progress);
 
         // apply force to make avatar stick to wall
-        Vector3 upVector = GetUpVector();
+        Vector3 upVector = GetUpVector().normalized;
         //float magnitudeModifier = (currentPipeRadius - upVector.magnitude + 1f) * 10f;
-        avatar.GetComponent<Rigidbody>().AddForce(-upVector * 20f / currentPipeRadius, ForceMode.Acceleration);
+        //avatarRigidbody.AddForce(-upVector * 20f / currentPipeRadius, ForceMode.Acceleration);
+        avatarRigidbody.AddForce(upVector * -9.81f, ForceMode.Acceleration);
         //Debug.Log(avatar.GetComponent<Rigidbody>().velocity.magnitude);
 
         // hover
@@ -226,6 +208,10 @@ public class Player : MonoBehaviour {
             // acceleration
             accelerationInput = Input.GetAxis("Vertical");
             avatar.GetComponent<Rigidbody>().AddForce(forceDirection * 5f * accelerationInput, ForceMode.Acceleration);
+
+            // turning
+            //float yRot = Input.GetAxis("Horizontal") * 5f;
+            //accumulatedYRot *= Quaternion.Euler(0f, yRot, 0f);
         }
     }
     private Vector3 forceL = Vector3.one;
@@ -245,5 +231,10 @@ public class Player : MonoBehaviour {
     public Vector3 GetCenterTrackPointDirection()
     {
         return centerTrackPointDirection;
+    }
+
+    public Vector3 GetAvatarPosition()
+    {
+        return avatar.transform.position;
     }
 }

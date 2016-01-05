@@ -37,6 +37,11 @@ public class Pipe : MonoBehaviour {
     public float pipeRadiusBegin; // 管道开头大小
     public float pipeRadiusEnd; // 管道结尾大小
 
+    public Pipe nextPipe
+    {
+        get; set;
+    }
+
     private void Awake()
     {
         GetComponent<MeshFilter>().mesh = mesh = new Mesh();
