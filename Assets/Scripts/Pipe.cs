@@ -37,6 +37,9 @@ public class Pipe : MonoBehaviour {
     public float pipeRadiusBegin; // 管道开头大小
     public float pipeRadiusEnd; // 管道结尾大小
 
+    private MeshRenderer renderer;
+    private Color pipeEmissionColor;
+
     public Pipe nextPipe
     {
         get; set;
@@ -53,6 +56,9 @@ public class Pipe : MonoBehaviour {
 
         // get mesh collider
         meshCollider = GetComponent<MeshCollider>();
+
+        renderer =  GetComponent<MeshRenderer>();
+        pipeEmissionColor = renderer.material.GetColor("_EmissionColor");
     }
 
     public float GetPipeEndRadius()
@@ -101,6 +107,18 @@ public class Pipe : MonoBehaviour {
         p1.y = curveRadius * Mathf.Cos(u);
         p1.z = 0;
         angleOfPiple = Vector3.Angle(p1,p0);
+    }
+
+    //粗细不同产生的的angle
+    public float GetPipeAngle()
+    {
+        return -Mathf.Atan(
+                Mathf.Abs((pipeRadiusBegin - pipeRadiusEnd))/
+                (
+                    curveRadius*2*Mathf.PI *
+                        angleOfPiple/360
+                )
+        );
     }
 
     // using geometrical formula for a torus, find point on the torus in world space
@@ -279,6 +297,17 @@ public class Pipe : MonoBehaviour {
 
         //return transform.TransformPoint(point);
         return point;
+    }
+
+    public Gradient coloring;
+    private float time = 0;
+    void FixedUpdate()
+    {
+        time += Time.deltaTime;
+        if(time > 1f)time -= 1f;
+        Color nextColor = coloring.Evaluate(time);
+        Debug.Log("r:"+nextColor.r+" b:"+nextColor.b);
+        renderer.material.SetColor("_EmissionColor", nextColor);
     }
 
     //private void OnDrawGizmos()
