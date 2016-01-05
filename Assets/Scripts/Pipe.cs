@@ -89,7 +89,7 @@ public class Pipe : MonoBehaviour {
         }
 
         // create new obstacles for this pipe
-        generators[Random.Range(0, generators.Length)].GenerateItems(this);
+        //generators[Random.Range(0, generators.Length)].GenerateItems(this);
 
         //扇形的2个顶点
         float u = curveSegmentCount * ringDistance / curveRadius;
@@ -171,7 +171,7 @@ public class Pipe : MonoBehaviour {
     }
 
     // given progress, get center track point in local coordinates
-    public Vector3 GetCenterPointByProgressLocal(float progress)
+    public Vector3 GetCenterPointPositionByProgressLocal(float progress)
     {
         float angle = progress * angleOfPiple;
         Vector3 centerPoint = Quaternion.AngleAxis(angle, Vector3.back) * p0;
@@ -179,9 +179,15 @@ public class Pipe : MonoBehaviour {
     }
 
     // given progress, get center track point in global coordinates
-    public Vector3 GetCenterPointByProgressGlobal(float progress)
+    public Vector3 GetCenterPointPositionByProgressGlobal(float progress)
     {
-        return transform.TransformPoint(GetCenterPointByProgressLocal(progress));
+        return transform.TransformPoint(GetCenterPointPositionByProgressLocal(progress));
+    }
+
+    // given progress, get center track point direction in local space
+    public Vector3 GetCenterPointDirectionByProgressLocal(float progress)
+    {
+        return Vector3.zero;
     }
 
     //计算夹角的角度 0~360

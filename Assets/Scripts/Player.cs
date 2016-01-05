@@ -11,8 +11,6 @@ public class Player : MonoBehaviour {
 
     public float floatingHeight;
 
-    public float startVelocity;
-
     public float[] accelerations;
 
     public float steeringForce = 20f;
@@ -21,9 +19,9 @@ public class Player : MonoBehaviour {
 
     public Avatar avatar;
 
-    private float acceleration, velocity;
-
+    [HideInInspector]
     public Pipe currentPipe; // the current pipe the player is traveling in
+    [HideInInspector]
     public Pipe prevPipe; // the pipe the player has just traveled through
 
     private float distanceTraveled;
@@ -47,13 +45,10 @@ public class Player : MonoBehaviour {
         distanceTraveled = 0f;
         avatarRotation = 0f;
         worldRotation = 0f;
-        acceleration = accelerations[accelerationMode];
-        velocity = startVelocity;
         currentPipe = pipeSystem.SetupInitialPipes();
         prevPipe = pipeSystem.GetVeryFirstPipe();
         //SetupCurrentPipe();
         gameObject.SetActive(true);
-        hud.SetValues(distanceTraveled, velocity);
     }
 
     private void Awake()
