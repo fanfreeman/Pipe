@@ -106,23 +106,24 @@ public class Player : MonoBehaviour {
         float currentPipeRadius = currentPipe.GetPipeRadiusByProgress(progress);
 
         // apply force to make avatar stick to wall
-        Vector3 upVector = GetUpVector().normalized;
+        Vector3 upVector = GetUpVector();
         //float magnitudeModifier = (currentPipeRadius - upVector.magnitude + 1f) * 10f;
         //avatarRigidbody.AddForce(-upVector * 20f / currentPipeRadius, ForceMode.Acceleration);
-        avatarRigidbody.AddForce(upVector * -9.81f, ForceMode.Acceleration);
+        avatarRigidbody.AddForce(upVector.normalized * -9.81f, ForceMode.Acceleration);
         //Debug.Log(avatar.GetComponent<Rigidbody>().velocity.magnitude);
+        //if (upVector.magnitude < currentPipeRadius) avatarRigidbody.AddForce(new Vector3(0, -9.81f, 0), ForceMode.Acceleration);
 
-        // hover
-        Ray ray = new Ray(avatar.transform.position, -avatar.transform.up);
-        RaycastHit hit;
-        float hoverHeight = 1.0f;
-        float hoverForce = 20f;
-        if (Physics.Raycast(ray, out hit, hoverHeight))
-        {
-            float proportionalHeight = (hoverHeight - hit.distance) / hoverHeight;
-            Vector3 appliedHoverForce = upVector.normalized * proportionalHeight * hoverForce;
-            avatar.GetComponent<Rigidbody>().AddForce(appliedHoverForce, ForceMode.Acceleration);
-        }
+        //// hover
+        //Ray ray = new Ray(avatar.transform.position, -avatar.transform.up);
+        //RaycastHit hit;
+        //float hoverHeight = 1.0f;
+        //float hoverForce = 20f;
+        //if (Physics.Raycast(ray, out hit, hoverHeight))
+        //{
+        //    float proportionalHeight = (hoverHeight - hit.distance) / hoverHeight;
+        //    Vector3 appliedHoverForce = upVector.normalized * proportionalHeight * hoverForce;
+        //    avatar.GetComponent<Rigidbody>().AddForce(appliedHoverForce, ForceMode.Acceleration);
+        //}
 
         // update avatar turning according to user input
         UpdateAvatarRotation(centerTrackPointDirection, centerTrackPointPosition);
