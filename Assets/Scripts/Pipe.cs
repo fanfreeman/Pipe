@@ -190,11 +190,11 @@ public class Pipe : MonoBehaviour {
 
     public float GetPipeProgressBySegmentIndex(int index)
     {
-        return (float)index/CurveSegmentCount;
+        return (float)index/(float)CurveSegmentCount;
     }
 
     // given progress, get center track point in local coordinates
-    public Vector3 GetCenterPointByProgressLocal(float progress)
+    public Vector3 GetCenterPointPositionByProgressLocal(float progress)
     {
         float angle = progress * angleOfPiple;
         Vector3 centerPoint = Quaternion.AngleAxis(angle, Vector3.back) * p0;
@@ -202,9 +202,27 @@ public class Pipe : MonoBehaviour {
     }
 
     // given progress, get center track point in global coordinates
-    public Vector3 GetCenterPointByProgressGlobal(float progress)
+    public Vector3 GetCenterPointPositionByProgressGlobal(float progress)
     {
-        return transform.TransformPoint(GetCenterPointByProgressLocal(progress));
+        return transform.TransformPoint(GetCenterPointPositionByProgressLocal(progress));
+    }
+
+    // given progress, get center track point direction in global space
+    public Vector3 GetCenterPointDirectionByProgressGlobal(float progress)
+    {
+        Vector3 centerPoint = GetCenterPointPositionByProgressLocal(progress);
+        Vector3 centerPointDirection = new Vector3(
+                1,
+                -centerPoint.x / centerPoint.y,
+                0);
+        Vector3 directionOutput = transform.TransformVector(centerPointDirection).normalized;
+        //圆弧角度不大于270度即可
+        float angle = angle_360(centerPoint, p0);
+        if (angle > 90 && angle <= 270)
+        {
+            directionOutput = -directionOutput;
+        }
+        return directionOutput;
     }
 
     //计算夹角的角度 0~360

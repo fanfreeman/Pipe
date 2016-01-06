@@ -43,8 +43,9 @@ public class PipeItemRabbit : PipeItem {
         StartCoroutine(UpdateCoutine());
     }
 
-    public override void Position(Pipe pipe, float curveRotation, float ringRotation, float pipeRadius)
+    public override void Position(Pipe pipe, int segment, float ringRotation, float pipeRadius)
     {
+        float curveRotation = segment * pipe.CurveAngle / pipe.CurveSegmentCount;
         ringRotation =
         (Random.Range(0, pipe.pipeSegmentCount)) *
             360f / pipe.pipeSegmentCount;

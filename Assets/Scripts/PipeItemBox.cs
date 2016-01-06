@@ -10,8 +10,9 @@ public class PipeItemBox : PipeItem {
         rotater = transform.GetChild(0);
     }
 
-    public override void Position(Pipe pipe, float curveRotation, float ringRotation, float pipeRadius)
+    public override void Position(Pipe pipe, int segment, float ringRotation, float pipeRadius)
     {
+        float curveRotation = segment * pipe.CurveAngle / pipe.CurveSegmentCount;
         transform.SetParent(pipe.transform, false);
         transform.localRotation = Quaternion.Euler(0f, 0f, -curveRotation);
         rotater.localPosition = new Vector3(0f, pipe.CurveRadius); // put item in the pipe

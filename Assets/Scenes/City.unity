@@ -14,7 +14,7 @@ SceneSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 6
-  m_Fog: 1
+  m_Fog: 0
   m_FogColor: {r: .968762696, g: 1, b: .676470578, a: 1}
   m_FogMode: 3
   m_FogDensity: .0500000007
@@ -130,7 +130,6 @@ MonoBehaviour:
   rotationVelocity: 0
   mainMenu: {fileID: 1006385265}
   floatingHeight: 0
-  startVelocity: 0
   accelerations:
   - .100000001
   steeringForce: 20
@@ -151,6 +150,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pipeSystem: {fileID: 1143777651}
   vehicleAndCameraObject: {fileID: 736759259}
+  vehicleObject: {fileID: 0}
 --- !u!1 &276489528
 GameObject:
   m_ObjectHideFlags: 0
@@ -1889,48 +1889,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 160, y: 50}
   m_Pivot: {x: .5, y: .5}
---- !u!1001 &1922678393
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 493424, guid: 4b5c6ec5ed079d04c8a1d1da7c767c47, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 493424, guid: 4b5c6ec5ed079d04c8a1d1da7c767c47, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 493424, guid: 4b5c6ec5ed079d04c8a1d1da7c767c47, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 493424, guid: 4b5c6ec5ed079d04c8a1d1da7c767c47, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 493424, guid: 4b5c6ec5ed079d04c8a1d1da7c767c47, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 493424, guid: 4b5c6ec5ed079d04c8a1d1da7c767c47, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 493424, guid: 4b5c6ec5ed079d04c8a1d1da7c767c47, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 493424, guid: 4b5c6ec5ed079d04c8a1d1da7c767c47, type: 2}
-      propertyPath: m_RootOrder
-      value: 7
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: 4b5c6ec5ed079d04c8a1d1da7c767c47, type: 2}
-  m_IsPrefabParent: 0
 --- !u!1 &2127362801
 GameObject:
   m_ObjectHideFlags: 0
@@ -1973,3 +1931,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pipeSystem: {fileID: 1143777651}
   vehicleAndCameraObject: {fileID: 0}
+  vehicleObject: {fileID: 0}
