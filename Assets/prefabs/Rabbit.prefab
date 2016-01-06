@@ -758,7 +758,7 @@ Animation:
   m_Animations:
   - {fileID: 7400000, guid: 10ee0b58e166c484c896526ccc5971f2, type: 3}
   m_WrapMode: 0
-  m_PlayAutomatically: 1
+  m_PlayAutomatically: 0
   m_AnimatePhysics: 0
   m_CullingType: 1
 --- !u!114 &11433554
@@ -838,6 +838,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa7566a36770a7843b85babe8b209842, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animation: {fileID: 11109948}
 --- !u!135 &13595656
 SphereCollider:
   m_ObjectHideFlags: 1

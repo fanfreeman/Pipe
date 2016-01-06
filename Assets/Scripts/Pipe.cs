@@ -188,6 +188,11 @@ public class Pipe : MonoBehaviour {
         return (pipeRadiusBegin * (curveSegmentCount - index) + pipeRadiusEnd * index) / curveSegmentCount;
     }
 
+    public float GetPipeProgressBySegmentIndex(int index)
+    {
+        return (float)index/CurveSegmentCount;
+    }
+
     // given progress, get center track point in local coordinates
     public Vector3 GetCenterPointByProgressLocal(float progress)
     {
@@ -219,31 +224,6 @@ public class Pipe : MonoBehaviour {
 
     private void OnDrawGizmos()
     {
-        //测试progress
-//        Gizmos.color = Color.magenta;
-//        Vector3 drawObjectRaw = GetCenterPointByProgress(0.5f);
-//        Vector3 drawObject = transform.TransformPoint(drawObjectRaw);
-//        Gizmos.DrawSphere(drawObject, 0.2f);
-//
-//        Gizmos.color = Color.blue;
-//        drawObjectRaw = GetCenterPointByProgress(0.8f);
-//        drawObject = transform.TransformPoint(drawObjectRaw);
-//        Gizmos.DrawSphere(drawObject, 0.2f);
-//
-//        Gizmos.color = Color.yellow;
-//        drawObjectRaw = GetCenterPointByProgress(0.3f);
-//        drawObject = transform.TransformPoint(drawObjectRaw);
-//        Gizmos.DrawSphere(drawObject, 0.2f);
-//
-//        drawObjectRaw = GetCenterPointByProgress(1.3f);
-//        drawObject = transform.TransformPoint(drawObjectRaw);
-//        Gizmos.DrawSphere(drawObject, 0.2f);
-//
-//        drawObjectRaw = GetCenterPointByProgress(-0.3f);
-//        drawObject = transform.TransformPoint(drawObjectRaw);
-//        Gizmos.DrawSphere(drawObject, 0.2f);
-
-        //测试progress end
 
         Vector3 p0world;
         Vector3 p1world;
@@ -259,27 +239,6 @@ public class Pipe : MonoBehaviour {
         p1world = transform.TransformPoint(p1);
         Gizmos.color = Color.green;
         Gizmos.DrawSphere(p1world, 0.5f);
-
-        //Gizmos.color = Color.blue;
-        //        Gizmos.DrawSphere(transform.TransformPoint(Vector3.zero), 0.2f);
-
-        //计算车的位置在平面上的投影点
-        //Vector3 normal = new Vector3();
-        //Vector3 point = new Vector3();
-        //Math3d.PlaneFrom3Points(out normal,out point, p0, p1,Vector3.zero);
-        //Vector3 projectionPoint = Math3d.ProjectPointOnPlane(normal, point, positionOfAvatar);
-        //Gizmos.color = Color.red;
-        //Gizmos.DrawSphere(transform.TransformPoint(projectionPoint), 0.2f);
-
-        // get center track point, draw 圆切线
-        //Vector3 pointCenter = projectionPoint.normalized * p0.magnitude;
-        //Gizmos.color = Color.yellow;
-        //Vector3 pointCenterDirection = new Vector3(
-        //        1,
-        //        -pointCenter.x/pointCenter.y,
-        //        0);
-        //Gizmos.DrawLine(transform.TransformPoint(pointCenter),
-        //        transform.TransformPoint(pointCenter)+transform.TransformVector(pointCenterDirection).normalized*5f);
     }
 
     // using geometrical formula for a circle, find point along curve
@@ -303,10 +262,10 @@ public class Pipe : MonoBehaviour {
     private float time = 0;
     void FixedUpdate()
     {
+        //定时改变颜色
         time += Time.deltaTime;
         if(time > 1f)time -= 1f;
         Color nextColor = coloring.Evaluate(time);
-        Debug.Log("r:"+nextColor.r+" b:"+nextColor.b);
         renderer.material.SetColor("_EmissionColor", nextColor);
     }
 
