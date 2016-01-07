@@ -618,6 +618,48 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 501645140}
+--- !u!1001 &610930757
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 493722, guid: 6e340f640a5656141ac8d9db7a83fa6a, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 493722, guid: 6e340f640a5656141ac8d9db7a83fa6a, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 493722, guid: 6e340f640a5656141ac8d9db7a83fa6a, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 493722, guid: 6e340f640a5656141ac8d9db7a83fa6a, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 493722, guid: 6e340f640a5656141ac8d9db7a83fa6a, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 493722, guid: 6e340f640a5656141ac8d9db7a83fa6a, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 493722, guid: 6e340f640a5656141ac8d9db7a83fa6a, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 493722, guid: 6e340f640a5656141ac8d9db7a83fa6a, type: 2}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 6e340f640a5656141ac8d9db7a83fa6a, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &616615607
 GameObject:
   m_ObjectHideFlags: 0
@@ -698,6 +740,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 736759260}
+  - 114: {fileID: 736759261}
   m_Layer: 0
   m_Name: Car
   m_TagString: Untagged
@@ -719,6 +762,17 @@ Transform:
   - {fileID: 792556480}
   m_Father: {fileID: 0}
   m_RootOrder: 6
+--- !u!114 &736759261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 736759259}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97d8d36197b2cb446ad305e045d0b971, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &792556480 stripped
 Transform:
   m_PrefabParentObject: {fileID: 464616, guid: af943612db7b2bb4999f174c155e55c4, type: 2}

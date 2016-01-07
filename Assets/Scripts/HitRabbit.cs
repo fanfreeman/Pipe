@@ -3,17 +3,22 @@ using System.Collections;
 
 public class HitRabbit : MonoBehaviour {
     public BoxCollider triggerCollier;
-    public SphereCollider pushMeToSkyCollider;
+ //   public SphereCollider pushMeToSkyCollider;
 
-    void OnTriggerEnter()
+    void OnTriggerEnter(Collider collider)
     {
-        Debug.Log("打兔子");
         GetComponent<AudioSource>().Play();
-        pushMeToSkyCollider.enabled = true;
+
+        //撞击效果
+        Player player = collider.transform.parent.gameObject.GetComponent<Player>();
+        if(player != null)
+        {
+            player.BoomByRabbitEffect();
+        }
     }
 
     void OnCollisionExit()
     {
-        pushMeToSkyCollider.enabled = false;
+  //      pushMeToSkyCollider.enabled = false;
     }
 }

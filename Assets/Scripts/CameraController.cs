@@ -98,11 +98,13 @@ public class CameraController : MonoBehaviour {
         // update vehicle direction
         Vector3 vehicleDirection = player.GetCenterTrackPointDirection();
         Quaternion vehicleRotation = Quaternion.LookRotation(vehicleDirection, player.GetUpVector());
-        vehicleObject.transform.rotation = Quaternion.RotateTowards(vehicleObject.transform.rotation, vehicleRotation, Time.deltaTime * 300f);
+        if(vehicleObject != null)
+            vehicleObject.transform.rotation = Quaternion.RotateTowards(vehicleObject.transform.rotation, vehicleRotation, Time.deltaTime * 300f);
     }
 
     private void OnDrawGizmos()
     {
+        if(!Constant.showGizmos)return;
         if (Application.isPlaying)
         {
             Gizmos.color = Color.red;

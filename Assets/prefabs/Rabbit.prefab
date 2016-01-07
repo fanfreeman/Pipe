@@ -145,7 +145,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 443928}
-  - 135: {fileID: 13595656}
   - 65: {fileID: 6539038}
   - 114: {fileID: 11433554}
   - 82: {fileID: 8262162}
@@ -439,7 +438,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 116160}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: -1.62920685e-07}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -773,7 +772,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   triggerCollier: {fileID: 6539038}
-  pushMeToSkyCollider: {fileID: 13595656}
 --- !u!114 &11439722
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -839,18 +837,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animation: {fileID: 11109948}
---- !u!135 &13595656
-SphereCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 139448}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 0
-  serializedVersion: 2
-  m_Radius: 5
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!137 &13743220
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

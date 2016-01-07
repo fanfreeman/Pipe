@@ -19,11 +19,6 @@ public class PipeItemTurntable : PipeItem {
 
         float curveRotation = segment * pipe.CurveAngle / pipe.CurveSegmentCount;
         progress = pipe.GetPipeProgressBySegmentIndex(segment);
-        Debug.Log("index:"+segment+"  progress:"+pipe.GetPipeProgressBySegmentIndex(segment) +
-        "  localPosition:"+pipe.GetCenterPointPositionByProgressLocal(
-                pipe.GetPipeProgressBySegmentIndex(segment)
-        ).ToString());
-
 
         rotater.localPosition = new Vector3(0f, pipe.CurveRadius); // put item in the pipe
         rotater.localRotation = Quaternion.Euler(0f, 0f, -curveRotation);

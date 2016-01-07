@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityStandardAssets.CrossPlatformInput;
 
+[RequireComponent (typeof (CameraController))]
 public class Player : MonoBehaviour {
 
     public PipeSystem pipeSystem;
@@ -39,7 +40,7 @@ public class Player : MonoBehaviour {
     private Quaternion accumulatedYRot = Quaternion.identity;
 
     private Rigidbody avatarRigidbody;
-
+    private CarEffects car;
     public void StartGame(int accelerationMode)
     {
         distanceTraveled = 0f;
@@ -61,6 +62,7 @@ public class Player : MonoBehaviour {
 
     void Start()
     {
+        car = GetComponent<CameraController>().vehicleAndCameraObject.GetComponent<CarEffects>();
         StartGame(0);
         currentPipe.GetPlaneOfCurve(
                 transform.TransformPoint(avatar.transform.position),
@@ -95,7 +97,7 @@ public class Player : MonoBehaviour {
         //hud.SetValues(distanceTraveled, velocity);
 
         // apply force to move forward
-        avatar.GetComponent<Rigidbody>().AddForce(centerTrackPointDirection.normalized * 10f, ForceMode.Force);
+        avatarRigidbody.AddForce(centerTrackPointDirection.normalized * 10f, ForceMode.Force);
         //avatar.GetComponent<Rigidbody>().AddForce(coolVehicle.transform.forward.normalized * 15f, ForceMode.Force);
 
         float currentPipeRadius = currentPipe.GetPipeRadiusByProgress(progress);
@@ -104,24 +106,31 @@ public class Player : MonoBehaviour {
         Vector3 upVector = GetUpVector();
         //float magnitudeModifier = (currentPipeRadius - upVector.magnitude + 1f) * 10f;
         //avatarRigidbody.AddForce(-upVector * 20f / currentPipeRadius, ForceMode.Acceleration);
-        avatarRigidbody.AddForce(upVector.normalized * -9.81f, ForceMode.Acceleration);
-        //Debug.Log(avatar.GetComponent<Rigidbody>().velocity.magnitude);
-        //if (upVector.magnitude < currentPipeRadius) avatarRigidbody.AddForce(new Vector3(0, -9.81f, 0), ForceMode.Acceleration);
+        if(blockCarMovement <= 0){
+            avatarRigidbody.AddForce(upVector.normalized * -9.81f, ForceMode.Acceleration);
+            //Debug.Log(avatar.GetComponent<Rigidbody>().velocity.magnitude);
+            //if (upVector.magnitude < currentPipeRadius) avatarRigidbody.AddForce(new Vector3(0, -9.81f, 0), ForceMode.Acceleration);
 
-        //// hover
-        //Ray ray = new Ray(avatar.transform.position, -avatar.transform.up);
-        //RaycastHit hit;
-        //float hoverHeight = 1.0f;
-        //float hoverForce = 20f;
-        //if (Physics.Raycast(ray, out hit, hoverHeight))
-        //{
-        //    float proportionalHeight = (hoverHeight - hit.distance) / hoverHeight;
-        //    Vector3 appliedHoverForce = upVector.normalized * proportionalHeight * hoverForce;
-        //    avatar.GetComponent<Rigidbody>().AddForce(appliedHoverForce, ForceMode.Acceleration);
-        //}
+            //// hover
+            //Ray ray = new Ray(avatar.transform.position, -avatar.transform.up);
+            //RaycastHit hit;
+            //float hoverHeight = 1.0f;
+            //float hoverForce = 20f;
+            //if (Physics.Raycast(ray, out hit, hoverHeight))
+            //{
+            //    float proportionalHeight = (hoverHeight - hit.distance) / hoverHeight;
+            //    Vector3 appliedHoverForce = upVector.normalized * proportionalHeight * hoverForce;
+            //    avatar.GetComponent<Rigidbody>().AddForce(appliedHoverForce, ForceMode.Acceleration);
+            //}
 
-        // update avatar turning according to user input
-        UpdateAvatarRotation(centerTrackPointDirection, centerTrackPointPosition);
+            // update avatar turning according to user input
+            UpdateAvatarRotation(centerTrackPointDirection, centerTrackPointPosition);
+        }
+        else
+        {
+            blockCarMovement -=Time.deltaTime;
+        }
+
     }
     
     private Vector3 coolVehicleLookAtVelocity;
@@ -129,6 +138,7 @@ public class Player : MonoBehaviour {
 
     private void OnDrawGizmos()
     {
+        if(!Constant.showGizmos)return;
         if (Application.isPlaying)
         {
             Gizmos.color = Color.cyan;
@@ -154,6 +164,28 @@ public class Player : MonoBehaviour {
         }
     }
 
+    //撞上兔子后的效果
+    public void BoomByRabbitEffect()
+    {
+        Debug.Log("车打兔子");
+
+        //先减速
+        avatarRigidbody.velocity = Vector3.zero;
+        avatarRigidbody.AddForce(centerTrackPointDirection.normalized * -5f, ForceMode.VelocityChange);
+        //推上天
+        Vector3 pushUp = GetUpVector().normalized;
+        avatarRigidbody.AddForce(pushUp * 2f, ForceMode.VelocityChange);
+        //让车失控然后转
+        BlockCarMovement(1.5f);
+        car.CarRotate(900, 2f);
+    }
+
+    //让车失控一会儿
+    private float blockCarMovement = 0;
+    public void BlockCarMovement(float time){
+        blockCarMovement = time;
+    }
+
     public Vector3 GetUpVector()
     {
         return centerTrackPointPosition - avatar.transform.position;
@@ -175,10 +207,10 @@ public class Player : MonoBehaviour {
 
                 if (Input.GetTouch(0).position.x < Screen.width * 0.5f)
                 {
-                    avatar.GetComponent<Rigidbody>().AddForce(-normal * steeringForce, ForceMode.Acceleration);
+                    avatarRigidbody.AddForce(-normal * steeringForce, ForceMode.Acceleration);
                 }
                 else {
-                    avatar.GetComponent<Rigidbody>().AddForce(normal * steeringForce, ForceMode.Acceleration);
+                    avatarRigidbody.AddForce(normal * steeringForce, ForceMode.Acceleration);
                 }
             }
         }
@@ -192,18 +224,18 @@ public class Player : MonoBehaviour {
             Math3d.PlaneFrom3Points(out normal, out temp, goAheadVector, curvePoint, avatar.transform.position);
             if (rotationInput > 0)
             {
-                avatar.GetComponent<Rigidbody>().AddForce(-normal * steeringForce, ForceMode.Acceleration);
+                avatarRigidbody.AddForce(-normal * steeringForce, ForceMode.Acceleration);
                 forceL = -normal;
             }
             else if (rotationInput < 0)
             {
-                avatar.GetComponent<Rigidbody>().AddForce(normal * steeringForce, ForceMode.Acceleration);
+                avatarRigidbody.AddForce(normal * steeringForce, ForceMode.Acceleration);
                 forceR = normal;
             }
 
             // acceleration
             accelerationInput = Input.GetAxis("Vertical");
-            avatar.GetComponent<Rigidbody>().AddForce(forceDirection * 5f * accelerationInput, ForceMode.Acceleration);
+            avatarRigidbody.AddForce(forceDirection * 5f * accelerationInput, ForceMode.Acceleration);
 
             // turning
             //float yRot = Input.GetAxis("Horizontal") * 5f;

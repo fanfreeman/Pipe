@@ -242,7 +242,7 @@ public class Pipe : MonoBehaviour {
 
     private void OnDrawGizmos()
     {
-
+        if(!Constant.showGizmos)return;
         Vector3 p0world;
         Vector3 p1world;
 
@@ -419,10 +419,13 @@ public class Pipe : MonoBehaviour {
         mesh.triangles = triangles;
     }
 
+    private int randomSegment;
+    private int segmentRandomOffset = 6;
     public void AlignWith(Pipe pipe)
     {
         // random relative rotation
-        relativeRotation = Random.Range(0, curveSegmentCount) * 360f / pipeSegmentCount;
+        randomSegment = Random.Range(segmentRandomOffset, curveSegmentCount-segmentRandomOffset);
+        relativeRotation = randomSegment * 360f / pipeSegmentCount;
 
         transform.SetParent(pipe.transform, false);
         transform.localPosition = Vector3.zero;
