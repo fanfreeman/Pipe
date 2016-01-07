@@ -151,6 +151,7 @@ MonoBehaviour:
   pipeSystem: {fileID: 1143777651}
   vehicleAndCameraObject: {fileID: 736759259}
   vehicleObject: {fileID: 218160165}
+  cameraObject: {fileID: 374186900}
 --- !u!1 &218160165 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 135590, guid: af943612db7b2bb4999f174c155e55c4, type: 2}
@@ -374,7 +375,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 374186900}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: .540000021, z: -1.00300002}
+  m_LocalPosition: {x: 0, y: .529999971, z: -1.00300002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 736759260}
@@ -1932,3 +1933,4 @@ MonoBehaviour:
   pipeSystem: {fileID: 1143777651}
   vehicleAndCameraObject: {fileID: 0}
   vehicleObject: {fileID: 0}
+  cameraObject: {fileID: 0}
