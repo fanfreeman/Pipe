@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class Pipe : MonoBehaviour {
 
-    public float maxPipeRadius;
+    public float minPipeRadius, maxPipeRadius;
     public int pipeSegmentCount;
     public float ringDistance; // scaling of pipe rings; default is 1
 
@@ -71,7 +71,7 @@ public class Pipe : MonoBehaviour {
     {
         // determine pipe beginning and end radii
         pipeRadiusBegin = prevPipeEndRadius;
-        pipeRadiusEnd = Random.Range(maxPipeRadius, maxPipeRadius);
+        pipeRadiusEnd = Random.Range(minPipeRadius, maxPipeRadius);
 
         // create pipe mesh
         curveRadius = Random.Range(minCurveRadius, maxCurveRadius);
@@ -95,7 +95,7 @@ public class Pipe : MonoBehaviour {
         }
 
         // create new obstacles for this pipe
-        //generators[Random.Range(0, generators.Length)].GenerateItems(this);
+        generators[Random.Range(0, generators.Length)].GenerateItems(this);
 
         //扇形的2个顶点
         float u = curveSegmentCount * ringDistance / curveRadius;

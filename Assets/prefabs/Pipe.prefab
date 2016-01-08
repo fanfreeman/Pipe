@@ -87,11 +87,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f956e81e98bfb464ea1aa2b8b3eb4019, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxPipeRadius: 8
+  minPipeRadius: 4
+  maxPipeRadius: 12
   pipeSegmentCount: 20
   ringDistance: 1
   minCurveRadius: 8
-  maxCurveRadius: 8
+  maxCurveRadius: 40
   minCurveSegmentCount: 20
   maxCurveSegmentCount: 20
   generators:
@@ -159,7 +160,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: maxCurveRadius
-      value: 8
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: minCurveSegmentCount
@@ -244,14 +245,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: maxPipeRadius
-      value: 8
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_Layer
       value: 8
-      objectReference: {fileID: 0}
-      propertyPath: coloring.atime0
-      value: 8674
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: coloring.key2.rgba
@@ -316,6 +314,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: coloring.ctime0
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: minPipeRadius
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

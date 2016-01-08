@@ -8,7 +8,7 @@ public class RandomPlacer : PipeItemGenerator {
     public override void GenerateItems(Pipe pipe)
     {
         int countOfTurnTable = 0;
-        for (int i = 0; i < pipe.CurveSegmentCount; i+= 2)
+        for (int i = 0; i < pipe.CurveSegmentCount; i+= 4)
         {
             int pointer = Random.Range(0, itemPrefabs.Length);
             PipeItem item = Instantiate<PipeItem>(

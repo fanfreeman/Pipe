@@ -14,7 +14,7 @@ SceneSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 6
-  m_Fog: 0
+  m_Fog: 1
   m_FogColor: {r: .968762696, g: 1, b: .676470578, a: 1}
   m_FogMode: 3
   m_FogDensity: .0500000007
@@ -1028,7 +1028,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11476002, guid: 39b53518d7c7aba4d9f313d029e837d4, type: 2}
       propertyPath: pipeCount
-      value: 5
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 11476002, guid: 39b53518d7c7aba4d9f313d029e837d4, type: 2}
       propertyPath: emptyPipeCount
@@ -1050,7 +1050,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pipePrefab: {fileID: 11442014, guid: 84cd30228e4c6314f86b6400665751b0, type: 2}
-  pipeCount: 5
+  pipeCount: 7
   emptyPipeCount: 2
 --- !u!1 &1269187966
 GameObject:

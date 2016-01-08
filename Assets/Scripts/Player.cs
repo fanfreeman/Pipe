@@ -41,6 +41,9 @@ public class Player : MonoBehaviour {
 
     private Rigidbody avatarRigidbody;
     private CarEffects car;
+
+    private const float Gravity = -9.81f;
+
     public void StartGame(int accelerationMode)
     {
         distanceTraveled = 0f;
@@ -108,7 +111,7 @@ public class Player : MonoBehaviour {
         //float magnitudeModifier = (currentPipeRadius - upVector.magnitude + 1f) * 10f;
         //avatarRigidbody.AddForce(-upVector * 20f / currentPipeRadius, ForceMode.Acceleration);
         if(blockCarMovement <= 0){
-            avatarRigidbody.AddForce(upVector.normalized * -9.81f, ForceMode.Acceleration);
+            avatarRigidbody.AddForce(upVector.normalized * Gravity, ForceMode.Acceleration);
             //Debug.Log(avatar.GetComponent<Rigidbody>().velocity.magnitude);
             //if (upVector.magnitude < currentPipeRadius) avatarRigidbody.AddForce(new Vector3(0, -9.81f, 0), ForceMode.Acceleration);
 
