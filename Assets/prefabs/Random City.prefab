@@ -40,9 +40,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemPrefabs:
-  - {fileID: 11493496, guid: 4c15575f0bea60841973152c11078036, type: 2}
-  - {fileID: 11483194, guid: 4dcda9047bef8f249a8f0af24daa5eed, type: 2}
-  - {fileID: 11441038, guid: 57d75c804060a634fbd4d19e640fa9a0, type: 2}
+  - {fileID: 11472172, guid: 6e340f640a5656141ac8d9db7a83fa6a, type: 2}
+  - {fileID: 11407614, guid: 4b5c6ec5ed079d04c8a1d1da7c767c47, type: 2}
+  - {fileID: 11472172, guid: 6e340f640a5656141ac8d9db7a83fa6a, type: 2}
+  - {fileID: 11472172, guid: 6e340f640a5656141ac8d9db7a83fa6a, type: 2}
+  - {fileID: 11472172, guid: 6e340f640a5656141ac8d9db7a83fa6a, type: 2}
+  - {fileID: 11472172, guid: 6e340f640a5656141ac8d9db7a83fa6a, type: 2}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -52,17 +55,22 @@ Prefab:
     m_Modifications:
     - target: {fileID: 0}
       propertyPath: itemPrefabs.Array.size
-      value: 3
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: itemPrefabs.Array.data[1]
       value: 
-      objectReference: {fileID: 11483194, guid: 4dcda9047bef8f249a8f0af24daa5eed,
+      objectReference: {fileID: 11407614, guid: 4b5c6ec5ed079d04c8a1d1da7c767c47,
         type: 2}
     - target: {fileID: 0}
       propertyPath: itemPrefabs.Array.data[2]
       value: 
-      objectReference: {fileID: 11441038, guid: 57d75c804060a634fbd4d19e640fa9a0,
+      objectReference: {fileID: 11472172, guid: 6e340f640a5656141ac8d9db7a83fa6a,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: itemPrefabs.Array.data[0]
+      value: 
+      objectReference: {fileID: 11472172, guid: 6e340f640a5656141ac8d9db7a83fa6a,
         type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

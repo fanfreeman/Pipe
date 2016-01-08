@@ -16,6 +16,7 @@ public class Avatar : MonoBehaviour {
 
     private void OnTriggerEnter(Collider collider)
     {
+        return;
         if (deathCountdown < 0f)
         {
             shape.enableEmission = false;

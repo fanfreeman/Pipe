@@ -176,6 +176,7 @@ public class CameraController : MonoBehaviour {
 
     private void OnDrawGizmos()
     {
+        if(!Constant.showGizmos)return;
         if (Application.isPlaying)
         {
             Gizmos.color = Color.red;

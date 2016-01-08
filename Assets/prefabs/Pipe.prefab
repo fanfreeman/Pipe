@@ -99,6 +99,49 @@ MonoBehaviour:
   cameraSpline: {fileID: 0}
   pipeRadiusBegin: 8
   pipeRadiusEnd: 2
+  coloring:
+    key0:
+      serializedVersion: 2
+      rgba: 4294967295
+    key1:
+      serializedVersion: 2
+      rgba: 4280615167
+    key2:
+      serializedVersion: 2
+      rgba: 14353910
+    key3:
+      serializedVersion: 2
+      rgba: 15862582
+    key4:
+      serializedVersion: 2
+      rgba: 15181061
+    key5:
+      serializedVersion: 2
+      rgba: 1304902
+    key6:
+      serializedVersion: 2
+      rgba: 3460793
+    key7:
+      serializedVersion: 2
+      rgba: 16777215
+    ctime0: 0
+    ctime1: 7132
+    ctime2: 16577
+    ctime3: 24865
+    ctime4: 34310
+    ctime5: 46260
+    ctime6: 56861
+    ctime7: 65535
+    atime0: 8674
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_NumColorKeys: 8
+    m_NumAlphaKeys: 2
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -206,6 +249,73 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_Layer
       value: 8
+      objectReference: {fileID: 0}
+      propertyPath: coloring.atime0
+      value: 8674
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: coloring.key2.rgba
+      value: 14353910
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: coloring.ctime1
+      value: 7132
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: coloring.ctime2
+      value: 16577
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: coloring.m_NumColorKeys
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: coloring.key1.rgba
+      value: 4280615167
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: coloring.key3.rgba
+      value: 15862582
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: coloring.ctime3
+      value: 24865
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: coloring.key4.rgba
+      value: 15181061
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: coloring.ctime4
+      value: 34310
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: coloring.key5.rgba
+      value: 1304902
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: coloring.ctime5
+      value: 46260
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: coloring.key6.rgba
+      value: 3460793
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: coloring.ctime6
+      value: 56861
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: coloring.key7.rgba
+      value: 16777215
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: coloring.ctime7
+      value: 65535
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: coloring.ctime0
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

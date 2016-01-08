@@ -37,6 +37,9 @@ public class Pipe : MonoBehaviour {
     public float pipeRadiusBegin; // 管道开头大小
     public float pipeRadiusEnd; // 管道结尾大小
 
+    private MeshRenderer renderer;
+    private Color pipeEmissionColor;
+
     public Pipe nextPipe
     {
         get; set;
@@ -53,6 +56,9 @@ public class Pipe : MonoBehaviour {
 
         // get mesh collider
         meshCollider = GetComponent<MeshCollider>();
+
+        renderer =  GetComponent<MeshRenderer>();
+        pipeEmissionColor = renderer.material.GetColor("_EmissionColor");
     }
 
     public float GetPipeEndRadius()
@@ -101,6 +107,18 @@ public class Pipe : MonoBehaviour {
         p1.y = curveRadius * Mathf.Cos(u);
         p1.z = 0;
         angleOfPiple = Vector3.Angle(p1,p0);
+    }
+
+    //粗细不同产生的的angle
+    public float GetPipeAngle()
+    {
+        return -Mathf.Atan(
+                Mathf.Abs((pipeRadiusBegin - pipeRadiusEnd))/
+                (
+                    curveRadius*2*Mathf.PI *
+                        angleOfPiple/360
+                )
+        );
     }
 
     // using geometrical formula for a torus, find point on the torus in world space
@@ -170,8 +188,13 @@ public class Pipe : MonoBehaviour {
         return (pipeRadiusBegin * (curveSegmentCount - index) + pipeRadiusEnd * index) / curveSegmentCount;
     }
 
+    public float GetPipeProgressBySegmentIndex(int index)
+    {
+        return (float)index/(float)CurveSegmentCount;
+    }
+
     // given progress, get center track point in local coordinates
-    private Vector3 GetCenterPointPositionByProgressLocal(float progress)
+    public Vector3 GetCenterPointPositionByProgressLocal(float progress)
     {
         float angle = progress * angleOfPiple;
         Vector3 centerPoint = Quaternion.AngleAxis(angle, Vector3.back) * p0;
@@ -219,32 +242,7 @@ public class Pipe : MonoBehaviour {
 
     private void OnDrawGizmos()
     {
-        //测试progress
-//        Gizmos.color = Color.magenta;
-//        Vector3 drawObjectRaw = GetCenterPointByProgress(0.5f);
-//        Vector3 drawObject = transform.TransformPoint(drawObjectRaw);
-//        Gizmos.DrawSphere(drawObject, 0.2f);
-//
-//        Gizmos.color = Color.blue;
-//        drawObjectRaw = GetCenterPointByProgress(0.8f);
-//        drawObject = transform.TransformPoint(drawObjectRaw);
-//        Gizmos.DrawSphere(drawObject, 0.2f);
-//
-//        Gizmos.color = Color.yellow;
-//        drawObjectRaw = GetCenterPointByProgress(0.3f);
-//        drawObject = transform.TransformPoint(drawObjectRaw);
-//        Gizmos.DrawSphere(drawObject, 0.2f);
-//
-//        drawObjectRaw = GetCenterPointByProgress(1.3f);
-//        drawObject = transform.TransformPoint(drawObjectRaw);
-//        Gizmos.DrawSphere(drawObject, 0.2f);
-//
-//        drawObjectRaw = GetCenterPointByProgress(-0.3f);
-//        drawObject = transform.TransformPoint(drawObjectRaw);
-//        Gizmos.DrawSphere(drawObject, 0.2f);
-
-        //测试progress end
-
+        if(!Constant.showGizmos)return;
         Vector3 p0world;
         Vector3 p1world;
 
@@ -259,27 +257,6 @@ public class Pipe : MonoBehaviour {
         p1world = transform.TransformPoint(p1);
         Gizmos.color = Color.green;
         Gizmos.DrawSphere(p1world, 0.5f);
-
-        //Gizmos.color = Color.blue;
-        //        Gizmos.DrawSphere(transform.TransformPoint(Vector3.zero), 0.2f);
-
-        //计算车的位置在平面上的投影点
-        //Vector3 normal = new Vector3();
-        //Vector3 point = new Vector3();
-        //Math3d.PlaneFrom3Points(out normal,out point, p0, p1,Vector3.zero);
-        //Vector3 projectionPoint = Math3d.ProjectPointOnPlane(normal, point, positionOfAvatar);
-        //Gizmos.color = Color.red;
-        //Gizmos.DrawSphere(transform.TransformPoint(projectionPoint), 0.2f);
-
-        // get center track point, draw 圆切线
-        //Vector3 pointCenter = projectionPoint.normalized * p0.magnitude;
-        //Gizmos.color = Color.yellow;
-        //Vector3 pointCenterDirection = new Vector3(
-        //        1,
-        //        -pointCenter.x/pointCenter.y,
-        //        0);
-        //Gizmos.DrawLine(transform.TransformPoint(pointCenter),
-        //        transform.TransformPoint(pointCenter)+transform.TransformVector(pointCenterDirection).normalized*5f);
     }
 
     // using geometrical formula for a circle, find point along curve
@@ -297,6 +274,17 @@ public class Pipe : MonoBehaviour {
 
         //return transform.TransformPoint(point);
         return point;
+    }
+
+    public Gradient coloring;
+    private float time = 0;
+    void FixedUpdate()
+    {
+        //定时改变颜色
+        time += Time.deltaTime;
+        if(time > 1f)time -= 1f;
+        Color nextColor = coloring.Evaluate(time);
+        renderer.material.SetColor("_EmissionColor", nextColor);
     }
 
     //private void OnDrawGizmos()
@@ -431,10 +419,13 @@ public class Pipe : MonoBehaviour {
         mesh.triangles = triangles;
     }
 
+    private int randomSegment;
+    private int segmentRandomOffset = 6;
     public void AlignWith(Pipe pipe)
     {
         // random relative rotation
-        relativeRotation = Random.Range(0, curveSegmentCount) * 360f / pipeSegmentCount;
+        randomSegment = Random.Range(segmentRandomOffset, curveSegmentCount-segmentRandomOffset);
+        relativeRotation = randomSegment * 360f / pipeSegmentCount;
 
         transform.SetParent(pipe.transform, false);
         transform.localPosition = Vector3.zero;
