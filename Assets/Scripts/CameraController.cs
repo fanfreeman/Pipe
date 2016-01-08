@@ -27,9 +27,9 @@ public class CameraController : MonoBehaviour {
     private const float CameraMinZ = -1f;
     private const float CameraMaxZ = -1.7f;
     private const float CameraMinRotationX = 0;
-    private const float CameraMaxRotationX = 20f; // degrees
+    private const float CameraMaxRotationX = -40f; // degrees
     private const float CameraDeltaY = 1f;
-    private const float CameraDeltaRotationX = -1f;
+    private const float CameraDeltaRotationX = 20f;
     
     void Start()
     {
@@ -42,7 +42,7 @@ public class CameraController : MonoBehaviour {
         }
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         Vector3 avatarPosition = player.GetAvatarPosition();
         //Vector3 forwardPosition = avatarPosition + player.GetCenterTrackPointDirection() * 5f; // a point in front of the player
@@ -118,26 +118,29 @@ public class CameraController : MonoBehaviour {
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 10f, layerMask))
         {
-            Vector3 cameraLocalPosition = cameraObject.transform.localPosition;
-            // move y up
-            if (cameraLocalPosition.y < CameraMaxY)
-            {
-                cameraLocalPosition.y += Time.deltaTime * CameraDeltaY;
-                cameraObject.transform.localPosition = cameraLocalPosition;
-            }
+            //Vector3 cameraLocalPosition = cameraObject.transform.localPosition;
+            //// move y up
+            //if (cameraLocalPosition.y < CameraMaxY)
+            //{
+            //    cameraLocalPosition.y += Time.deltaTime * CameraDeltaY;
+            //    cameraObject.transform.localPosition = cameraLocalPosition;
+            //}
 
-            // move z backwards
-            if (cameraLocalPosition.z > CameraMaxZ)
-            {
-                cameraLocalPosition.z -= Time.deltaTime * CameraDeltaY;
-                cameraObject.transform.localPosition = cameraLocalPosition;
-            }
+            //// move z backwards
+            //if (cameraLocalPosition.z > CameraMaxZ)
+            //{
+            //    cameraLocalPosition.z -= Time.deltaTime * CameraDeltaY;
+            //    cameraObject.transform.localPosition = cameraLocalPosition;
+            //}
 
             // rotate around x-axis
             Quaternion cameraLocalRotation = cameraObject.transform.localRotation;
-            if (cameraLocalRotation.eulerAngles.x < CameraMaxRotationX)
+            float rotationX = cameraLocalRotation.eulerAngles.x;
+            if (rotationX > 180f) rotationX -= 360f;
+            Debug.Log(rotationX);
+            if (rotationX > CameraMaxRotationX)
             {
-                cameraObject.transform.Rotate(Time.deltaTime * CameraDeltaRotationX, 0, 0);
+                cameraObject.transform.Rotate(Time.deltaTime * -CameraDeltaRotationX, 0, 0);
             }
 
             Debug.DrawLine(ray.origin, hit.point);
@@ -145,25 +148,28 @@ public class CameraController : MonoBehaviour {
         } else
         {
             // move y back down
-            Vector3 cameraLocalPosition = cameraObject.transform.localPosition;
-            if (cameraLocalPosition.y > CameraMinY)
-            {
-                cameraLocalPosition.y -= Time.deltaTime * CameraDeltaY;
-                cameraObject.transform.localPosition = cameraLocalPosition;
-            }
+            //Vector3 cameraLocalPosition = cameraObject.transform.localPosition;
+            //if (cameraLocalPosition.y > CameraMinY)
+            //{
+            //    cameraLocalPosition.y -= Time.deltaTime * CameraDeltaY;
+            //    cameraObject.transform.localPosition = cameraLocalPosition;
+            //}
 
-            // move z forward
-            if (cameraLocalPosition.z < CameraMinZ)
-            {
-                cameraLocalPosition.z += Time.deltaTime * CameraDeltaY;
-                cameraObject.transform.localPosition = cameraLocalPosition;
-            }
+            //// move z forward
+            //if (cameraLocalPosition.z < CameraMinZ)
+            //{
+            //    cameraLocalPosition.z += Time.deltaTime * CameraDeltaY;
+            //    cameraObject.transform.localPosition = cameraLocalPosition;
+            //}
 
             // rotate around x-axis
             Quaternion cameraLocalRotation = cameraObject.transform.localRotation;
-            if (cameraLocalRotation.eulerAngles.x > CameraMinRotationX)
+            float rotationX = cameraLocalRotation.eulerAngles.x;
+            if (rotationX > 180f) rotationX -= 360f;
+            Debug.Log(rotationX);
+            if (rotationX < CameraMinRotationX)
             {
-                cameraObject.transform.Rotate(Time.deltaTime * -CameraDeltaRotationX, 0, 0);
+                cameraObject.transform.Rotate(Time.deltaTime * CameraDeltaRotationX, 0, 0);
             }
         }
     }

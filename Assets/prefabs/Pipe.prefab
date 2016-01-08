@@ -90,8 +90,8 @@ MonoBehaviour:
   maxPipeRadius: 8
   pipeSegmentCount: 20
   ringDistance: 1
-  minCurveRadius: 7
-  maxCurveRadius: 40
+  minCurveRadius: 8
+  maxCurveRadius: 8
   minCurveSegmentCount: 20
   maxCurveSegmentCount: 20
   generators:
@@ -112,11 +112,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: minCurveRadius
-      value: 7
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: maxCurveRadius
-      value: 40
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: minCurveSegmentCount

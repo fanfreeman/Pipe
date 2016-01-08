@@ -72,6 +72,11 @@ public class Player : MonoBehaviour {
 
     private void Update()
     {
+        
+    }
+
+    void FixedUpdate()
+    {
         currentPipe.GetPlaneOfCurve(
                 avatar.transform.position,
                 ref centerTrackPointDirection,
@@ -89,10 +94,6 @@ public class Player : MonoBehaviour {
         //Vector3 forwardVector =  avatar.transform.position - coolVehicle.transform.position;
         //var newRot = Quaternion.LookRotation(forwardVector ,upVector);
         //   coolVehicle.transform.rotation = Quaternion.Lerp(coolVehicle.transform.rotation, newRot, );
-
-
-        //UpdateAvatarRotation();
-        //hud.SetValues(distanceTraveled, velocity);
 
         // apply force to move forward
         avatar.GetComponent<Rigidbody>().AddForce(centerTrackPointDirection.normalized * 10f, ForceMode.Force);
