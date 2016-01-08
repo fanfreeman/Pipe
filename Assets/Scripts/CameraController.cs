@@ -24,16 +24,20 @@ public class CameraController : MonoBehaviour {
     // max pos and rotation are for preventing staring at the ground
     private const float CameraMinY = 0.53f;
     private const float CameraMaxY = 1f;
-    private const float CameraMinZ = -1f;
-    private const float CameraMaxZ = -1.9f;
+    private const float CameraMinZ = -3.5f;
+//    private const float CameraMaxZ = -1.9f -0.5f;
     private const float CameraMinRotationX = 0;
     private const float CameraMaxRotationX = -40f; // degrees
     private const float CameraDeltaY = 1f;
     private const float CameraDeltaRotationX = 10f;
     private float cameraAntiGroundStareRotationTime = 0;
-    
+
+    private Rigidbody rigidbody;
+    private Vector3 cameraLocalPosition;
+    private Quaternion cameraRotation;
     void Start()
     {
+        rigidbody = cameraObject.GetComponent<Rigidbody>();
         player = GetComponent<Player>();
 
         for (int i = 0; i < NumDataPoints; i++)
@@ -100,7 +104,7 @@ public class CameraController : MonoBehaviour {
         Vector3 averageDirection = sumDirections / (float)NumDataPoints;
         Vector3 cameraDirection = averageDirection;
         //Vector3 cameraDirection = centerTrackPointDirections[0];
-        Quaternion cameraRotation = Quaternion.LookRotation(cameraDirection, player.GetUpVector());
+        cameraRotation = Quaternion.LookRotation(cameraDirection, player.GetUpVector());
         //Quaternion cameraRotation = Quaternion.LookRotation(centerTrackPointDirection, GetUpVector());
         //Debug.Log(cameraRotation.eulerAngles.ToString());
         //coolVehicle.transform.rotation = cameraRotation;
@@ -128,9 +132,8 @@ public class CameraController : MonoBehaviour {
             cameraObject.transform.Rotate(Time.deltaTime * -CameraDeltaRotationX, 0, 0);
             
             // move z backward
-            Vector3 cameraLocalPosition = cameraObject.transform.localPosition;
+            cameraLocalPosition = cameraObject.transform.localPosition;
             cameraLocalPosition.z -= Time.deltaTime * CameraDeltaY;
-            cameraObject.transform.localPosition = cameraLocalPosition;
 
             cameraAntiGroundStareRotationTime -= Time.deltaTime;
         } else
@@ -145,17 +148,23 @@ public class CameraController : MonoBehaviour {
             }
 
             // move z forward
-            Vector3 cameraLocalPosition = cameraObject.transform.localPosition;
+            cameraLocalPosition = cameraObject.transform.localPosition;
             if (cameraLocalPosition.z < CameraMinZ)
             {
                 cameraLocalPosition.z += Time.deltaTime * CameraDeltaY;
-                cameraObject.transform.localPosition = cameraLocalPosition;
             }
+
+
+//            cameraObject.transform.localPosition = cameraLocalPosition;
+          //  rigidbody.rotation = cameraRotation;
+            rigidbody.MovePosition(vehicleAndCameraObject.transform.TransformPoint(cameraLocalPosition));
 
             cameraAntiGroundStareRotationTime = 0;
         }
 
-        Debug.Log(cameraAntiGroundStareRotationTime);
+
+
+//        Debug.Log(cameraAntiGroundStareRotationTime);
     }
 
     private void OnDrawGizmos()

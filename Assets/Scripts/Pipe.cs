@@ -11,6 +11,7 @@ public class Pipe : MonoBehaviour {
     public float minCurveRadius, maxCurveRadius;
     public int minCurveSegmentCount, maxCurveSegmentCount;
 
+    public bool needOstacle = true;
     public PipeItemGenerator[] generators;
 
     private float curveRadius;
@@ -95,6 +96,7 @@ public class Pipe : MonoBehaviour {
         }
 
         // create new obstacles for this pipe
+        if(needOstacle ==true)
         generators[Random.Range(0, generators.Length)].GenerateItems(this);
 
         //扇形的2个顶点

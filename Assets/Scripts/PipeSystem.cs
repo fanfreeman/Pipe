@@ -12,7 +12,7 @@ public class PipeSystem : MonoBehaviour {
 
     private Pipe[] pipes;
 
-    private const int StartingPipeIndex = 1;
+    private const int StartingPipeIndex = 2;
 
     private void Awake()
     {
