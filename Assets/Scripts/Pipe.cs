@@ -109,7 +109,7 @@ public class Pipe : MonoBehaviour {
         angleOfPiple = Vector3.Angle(p1,p0);
     }
 
-    //粗细不同产生的的angle
+    //粗细不同产生的angle
     public float GetPipeAngle()
     {
         return -Mathf.Atan(

@@ -29,7 +29,8 @@ public class CameraController : MonoBehaviour {
     private const float CameraMinRotationX = 0;
     private const float CameraMaxRotationX = -40f; // degrees
     private const float CameraDeltaY = 1f;
-    private const float CameraDeltaRotationX = 30f;
+    private const float CameraDeltaRotationX = 10f;
+    private float cameraAntiGroundStareRotationTime = 0;
     
     void Start()
     {
@@ -118,64 +119,48 @@ public class CameraController : MonoBehaviour {
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 10f, layerMask))
         {
+            cameraAntiGroundStareRotationTime += Time.fixedDeltaTime;
+        }
+
+        if (cameraAntiGroundStareRotationTime > 0)
+        {
+            // rotate up around x-axis
+            cameraObject.transform.Rotate(Time.deltaTime * -CameraDeltaRotationX, 0, 0);
+            
+            // move z backward
             Vector3 cameraLocalPosition = cameraObject.transform.localPosition;
-            //// move y up
-            //if (cameraLocalPosition.y < CameraMaxY)
-            //{
-            //    cameraLocalPosition.y += Time.deltaTime * CameraDeltaY;
-            //    cameraObject.transform.localPosition = cameraLocalPosition;
-            //}
+            cameraLocalPosition.z -= Time.deltaTime * CameraDeltaY;
+            cameraObject.transform.localPosition = cameraLocalPosition;
 
-            // move z backwards
-            if (cameraLocalPosition.z > CameraMaxZ)
-            {
-                cameraLocalPosition.z -= Time.deltaTime * CameraDeltaY;
-                cameraObject.transform.localPosition = cameraLocalPosition;
-            }
-
-            // rotate around x-axis
+            cameraAntiGroundStareRotationTime -= Time.deltaTime;
+        } else
+        {
+            // rotate down around x-axis
             Quaternion cameraLocalRotation = cameraObject.transform.localRotation;
             float rotationX = cameraLocalRotation.eulerAngles.x;
             if (rotationX > 180f) rotationX -= 360f;
-            Debug.Log(rotationX);
-            if (rotationX > CameraMaxRotationX)
+            if (rotationX < CameraMinRotationX)
             {
-                cameraObject.transform.Rotate(Time.deltaTime * -CameraDeltaRotationX, 0, 0);
+                cameraObject.transform.Rotate(Time.deltaTime * CameraDeltaRotationX, 0, 0);
             }
 
-            Debug.Log("hit ground");
-        } else
-        {
-            // move y back down
-            Vector3 cameraLocalPosition = cameraObject.transform.localPosition;
-            //if (cameraLocalPosition.y > CameraMinY)
-            //{
-            //    cameraLocalPosition.y -= Time.deltaTime * CameraDeltaY;
-            //    cameraObject.transform.localPosition = cameraLocalPosition;
-            //}
-
             // move z forward
+            Vector3 cameraLocalPosition = cameraObject.transform.localPosition;
             if (cameraLocalPosition.z < CameraMinZ)
             {
                 cameraLocalPosition.z += Time.deltaTime * CameraDeltaY;
                 cameraObject.transform.localPosition = cameraLocalPosition;
             }
 
-            // rotate around x-axis
-            Quaternion cameraLocalRotation = cameraObject.transform.localRotation;
-            float rotationX = cameraLocalRotation.eulerAngles.x;
-            if (rotationX > 180f) rotationX -= 360f;
-            Debug.Log(rotationX);
-            if (rotationX < CameraMinRotationX)
-            {
-                cameraObject.transform.Rotate(Time.deltaTime * CameraDeltaRotationX, 0, 0);
-            }
+            cameraAntiGroundStareRotationTime = 0;
         }
+
+        Debug.Log(cameraAntiGroundStareRotationTime);
     }
 
     private void OnDrawGizmos()
     {
-        if(!Constant.showGizmos)return;
+        if(!Constant.showGizmos) return;
         if (Application.isPlaying)
         {
             Gizmos.color = Color.red;
