@@ -20,6 +20,8 @@ public class Player : MonoBehaviour {
 
     public Avatar avatar;
 
+    public GameObject vehicleObject;
+
     [HideInInspector]
     public Pipe currentPipe; // the current pipe the player is traveling in
     [HideInInspector]
@@ -37,7 +39,7 @@ public class Player : MonoBehaviour {
 
     private float progressDelta;
 
-    private Quaternion accumulatedYRot = Quaternion.identity;
+    public Quaternion accumulatedYRot = Quaternion.identity;
 
     private Rigidbody avatarRigidbody;
     private CarEffects car;
@@ -73,6 +75,9 @@ public class Player : MonoBehaviour {
                 ref centerTrackPointPosition,
                 ref progress
         );
+
+        Quaternion vehicleRotation = Quaternion.LookRotation(centerTrackPointDirection, GetUpVector());
+        vehicleObject.transform.rotation = vehicleRotation;
     }
 
     private void Update()
@@ -100,14 +105,36 @@ public class Player : MonoBehaviour {
         //var newRot = Quaternion.LookRotation(forwardVector ,upVector);
         //   coolVehicle.transform.rotation = Quaternion.Lerp(coolVehicle.transform.rotation, newRot, );
 
+        // update vehicle direction
+        Vector3 upVector = GetUpVector();
+
+        // method 1
+        //Quaternion vehicleRotation = Quaternion.LookRotation(centerTrackPointDirection, upVector);
+
+        // method 2
+        float vehicleHeadingElevation = Math3d.AngleVectorPlane(centerTrackPointDirection, upVector);
+        Quaternion restrictedVehicleRotation = Quaternion.AngleAxis(vehicleHeadingElevation, Vector3.left);
+
+        // method 3
+        //Quaternion rotation = Quaternion.FromToRotation(vehicleObject.transform.forward, centerTrackPointDirection);
+        //Vector3 vehicleRotationEuler = rotation.eulerAngles;
+        //Debug.Log(vehicleRotationEuler.y);
+        //vehicleRotationEuler.y = 0;
+        //Quaternion restrictedVehicleRotation = Quaternion.Euler(vehicleRotationEuler);
+
+        //
+        Vector3 rotatedForward = restrictedVehicleRotation * vehicleObject.transform.forward;
+        Quaternion vehicleRotation = Quaternion.LookRotation(rotatedForward, upVector);
+        vehicleRotation *= accumulatedYRot;
+        vehicleObject.transform.rotation = Quaternion.RotateTowards(vehicleObject.transform.rotation, vehicleRotation, Time.deltaTime * 300f);
+
         // apply force to move forward
-        avatarRigidbody.AddForce(centerTrackPointDirection.normalized * 10f, ForceMode.Force);
-        //avatar.GetComponent<Rigidbody>().AddForce(coolVehicle.transform.forward.normalized * 15f, ForceMode.Force);
+        //avatarRigidbody.AddForce(centerTrackPointDirection.normalized * 10f, ForceMode.Force);
+        avatarRigidbody.AddForce(vehicleObject.transform.forward.normalized * 10f, ForceMode.Force);
 
         float currentPipeRadius = currentPipe.GetPipeRadiusByProgress(progress);
 
         // apply force to make avatar stick to wall
-        Vector3 upVector = GetUpVector();
         //float magnitudeModifier = (currentPipeRadius - upVector.magnitude + 1f) * 10f;
         //avatarRigidbody.AddForce(-upVector * 20f / currentPipeRadius, ForceMode.Acceleration);
         if(blockCarMovement <= 0){
@@ -134,7 +161,6 @@ public class Player : MonoBehaviour {
         {
             blockCarMovement -=Time.deltaTime;
         }
-
     }
     
     private Vector3 coolVehicleLookAtVelocity;
@@ -226,24 +252,24 @@ public class Player : MonoBehaviour {
             Vector3 temp = new Vector3();
             //为了让力能垂直于曲线和车 根据3点计算出左右力坐在平面的normal
             Math3d.PlaneFrom3Points(out normal, out temp, goAheadVector, curvePoint, avatar.transform.position);
-            if (rotationInput > 0)
-            {
-                avatarRigidbody.AddForce(-normal * steeringForce, ForceMode.Acceleration);
-                forceL = -normal;
-            }
-            else if (rotationInput < 0)
-            {
-                avatarRigidbody.AddForce(normal * steeringForce, ForceMode.Acceleration);
-                forceR = normal;
-            }
+            //if (rotationInput > 0)
+            //{
+            //    avatarRigidbody.AddForce(-normal * steeringForce, ForceMode.Acceleration);
+            //    forceL = -normal;
+            //}
+            //else if (rotationInput < 0)
+            //{
+            //    avatarRigidbody.AddForce(normal * steeringForce, ForceMode.Acceleration);
+            //    forceR = normal;
+            //}
 
             // acceleration
             accelerationInput = Input.GetAxis("Vertical");
             avatarRigidbody.AddForce(forceDirection * 5f * accelerationInput, ForceMode.Acceleration);
 
             // turning
-            //float yRot = Input.GetAxis("Horizontal") * 5f;
-            //accumulatedYRot *= Quaternion.Euler(0f, yRot, 0f);
+            float yRot = Input.GetAxis("Horizontal") * 3f;
+            accumulatedYRot = Quaternion.Euler(0f, yRot, 0f);
         }
     }
     private Vector3 forceL = Vector3.one;

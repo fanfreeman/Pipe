@@ -95,7 +95,7 @@ public class Pipe : MonoBehaviour {
         }
 
         // create new obstacles for this pipe
-        generators[Random.Range(0, generators.Length)].GenerateItems(this);
+        //generators[Random.Range(0, generators.Length)].GenerateItems(this);
 
         //扇形的2个顶点
         float u = curveSegmentCount * ringDistance / curveRadius;

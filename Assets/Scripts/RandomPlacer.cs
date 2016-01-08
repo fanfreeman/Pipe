@@ -8,12 +8,12 @@ public class RandomPlacer : PipeItemGenerator {
     public override void GenerateItems(Pipe pipe)
     {
         int countOfTurnTable = 0;
-        for (int i = 0; i < pipe.CurveSegmentCount; i+= 4)
+        for (int i = 0; i < pipe.CurveSegmentCount; i+= 8)
         {
             int pointer = Random.Range(0, itemPrefabs.Length);
             PipeItem item = Instantiate<PipeItem>(
             itemPrefabs[pointer]);
-            //保证Turntabl只出现一次
+            //保证Turntable只出现一次
             if(countOfTurnTable == 0)
             {
                 if(item.GetType() == typeof(PipeItemTurntable))

@@ -107,11 +107,6 @@ public class CameraController : MonoBehaviour {
         vehicleAndCameraObject.transform.rotation = Quaternion.RotateTowards(vehicleAndCameraObject.transform.rotation, cameraRotation, Time.deltaTime * 100f);
         //iTween.RotateUpdate(coolVehicle, iTween.Hash("rotation", cameraRotation.eulerAngles, "time", 1f));
         
-        // update vehicle direction
-        Vector3 vehicleDirection = player.GetCenterTrackPointDirection();
-        Quaternion vehicleRotation = Quaternion.LookRotation(vehicleDirection, player.GetUpVector());
-        vehicleObject.transform.rotation = Quaternion.RotateTowards(vehicleObject.transform.rotation, vehicleRotation, Time.deltaTime * 300f);
-
         // prevent staring at ground
         int layerMask = 1 << 8; // only cast ray again the Pipe layer
         Vector3 screenPosition = new Vector3(Screen.width / 2f, Screen.height / 2f, 0);
@@ -154,8 +149,6 @@ public class CameraController : MonoBehaviour {
 
             cameraAntiGroundStareRotationTime = 0;
         }
-
-        Debug.Log(cameraAntiGroundStareRotationTime);
     }
 
     private void OnDrawGizmos()

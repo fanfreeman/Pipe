@@ -14,7 +14,7 @@ SceneSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 6
-  m_Fog: 1
+  m_Fog: 0
   m_FogColor: {r: .968762696, g: 1, b: .676470578, a: 1}
   m_FogMode: 3
   m_FogDensity: .0500000007
@@ -135,8 +135,10 @@ MonoBehaviour:
   steeringForce: 20
   hud: {fileID: 1588208812}
   avatar: {fileID: 1659284014}
+  vehicleObject: {fileID: 218160165}
   currentPipe: {fileID: 0}
   prevPipe: {fileID: 0}
+  accumulatedYRot: {x: 0, y: 0, z: 0, w: 1}
 --- !u!114 &20155501
 MonoBehaviour:
   m_ObjectHideFlags: 0
